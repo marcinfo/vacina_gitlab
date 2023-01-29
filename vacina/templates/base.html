@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<meta charset="UTF-8" />
+<html>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link href="{% static "css/base.css" %}" rel="stylesheet">
+</head>
+<body>
+  <div id="header">
+    <span class="logo">Vacina Paulistana v2</span>
+
+    <ul class="menu">
+      <li {% if section == "inicio" %}class="selected"{% endif %}>
+        <a href="{% url "index" %}">inicio</a>
+      </li>
+      <li {% if section == "Vacinas disponivel no SUS" %}class="selected"{% endif %}>
+        <a href="{% url "vacinas_prazos" %}">Calculadora</a>
+      </li>
+
+      <li {% if section == "UBS" %}class="selected"{% endif %}>
+        <a href="{% url "encontra_ubs" %}">UBS</a>
+<!--      </li>
+            <li {% if section == "API" %}class="selected"{% endif %}>
+        <a href="{% url "api" %}">API</a>
+      </li>-->
+      <li {% if section == "links" %}class="selected"{% endif %}>
+        <a href="{% url "links" %}">links</a>
+      </li>
+    {% if request.user.is_authenticated %}
+      <li {% if section == "Minha Agenda" %}class="selected"{% endif %}>
+        <a href="{% url "minhas_vacinas" %}">Minhas Vacinas</a>
+      </li>
+
+      <li {% if section == "Minha Conta" %}class="selected"{% endif %}>
+        <a href="{% url "dashboard" %}">Minha Conta</a>
+      </li>
+    {% endif %}
+
+    </ul>
+
+  <span class="user">
+    {% if request.user.is_authenticated %}
+      Olá {{ request.user.first_name }},
+      <a href="{% url "logout" %}">Logout</a>
+    {% else %}
+      <a href="{% url "login" %}">Log-in</a>
+    {% endif %}
+  </span>
+  </div>
+
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">
+          {{ message|safe }}
+            <a href="#" class="close">x</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+</body>
+</html>

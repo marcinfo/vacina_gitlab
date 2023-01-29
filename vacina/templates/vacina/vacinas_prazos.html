@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %} Vacina Paulistana{% endblock %}
+
+{% block content %}
+
+<html>
+<body>
+
+<div class="row">
+
+    <div>      <!-- Page Content -->
+        <div align="center">
+            <form id = teste action="/vacinas_prazos">
+                {% if request.user.is_authenticated %}
+
+                {%else%}
+                    <p>Para visualizar todos os dados, <a href="{% url "register" %}">registre aqui </a>ou faça o login!</p>
+                {% endif %}
+                <legend><strong>Selecione a Data de Nascimento</strong> Caso não seja escolhida sera utilizada a data de hoje.</legend>
+                <input type="date"  name="data_de_nascimento" placeholder="01/01/1990"" required><br/><br/>
+                <input type="submit" value="Calcular">
+
+            </form>
+
+            {% csrf_token %}
+            {{dados_sql3|safe}}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+{% endblock  %}
