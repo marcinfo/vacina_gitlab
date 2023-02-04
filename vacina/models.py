@@ -127,3 +127,5 @@ class Vacinas(models.Model):
     class Meta:
         managed = False
         db_table = 'vacinas'
+        verbose_name = "vacina"
+        verbose_name_plural = "vacinas"

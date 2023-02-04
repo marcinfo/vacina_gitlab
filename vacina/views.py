@@ -26,18 +26,27 @@ def index(request):
     dados_covid = json.loads(response.content)
     dados_covid['datetime'] = pd.to_datetime(dados_covid['datetime'])
 
-
     url2 = 'https://covid19-brazil-api.now.sh/api/report/v1/brazil'
     headers = {}
     response2 = requests.request('GET', url2, headers=headers)
     dados_covid2 = json.loads(response2.content)
 
 
-    print(dados_covid2)
-    print(dados_covid)
 
-    return render(request, 'vacina/index.html', {'dados_covid': dados_covid,'dados_covid2': dados_covid2})
-
+    url2 = 'https://covid19-brazil-api.now.sh/api/report/v1'
+    headers = {}
+    response3 = requests.request('GET', url2, data='data', headers=headers)
+    dados_covid3 = json.loads(response3.content)
+    df = pd.json_normalize(data=dados_covid3['data'])
+    df['datetime'] = pd.to_datetime(df['datetime'])
+    df['datetime'] = df['datetime'].dt.strftime('%d/%m/%Y %H:%M:%S')
+    df_brasil = df[['cases','deaths','suspects','refuses']].sum().head()
+    df_sao_paulo = df.query('uf=="SP"')
+    df_sao_paulo = df_sao_paulo[['cases', 'deaths', 'suspects', 'refuses','datetime']].sum().head()
+    df_sao_paulo['cases']=pd.to_numeric(df_sao_paulo['cases'],errors='ignore')
+    print(df_brasil.dtypes)
+    print(df_sao_paulo)
+    return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo,'df_brasil': df_brasil})
 
 def vacinas_prazos(request):
     nova_data = request.GET.get('data_de_nascimento')
@@ -65,7 +74,7 @@ def vacinas_prazos(request):
         # diasfalta += [dias]
     # adiciona a lista ao dataframe
     dados_sql['dataprevista'] = listadata
-    dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() - pd.DateOffset(days=1))]
+    dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() + pd.DateOffset(days=7))]
     dados_sql.to_string(index=False)
     # transforma data para o formato brasileiro
     dados_sql['dataprevista'] = pd.to_datetime(dados_sql['dataprevista'])
