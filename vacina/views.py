@@ -62,17 +62,24 @@ def vacinas_prazos(request):
         # diasfalta += [dias]
     # adiciona a lista ao dataframe
     dados_sql['dataprevista'] = listadata
-    dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() + pd.DateOffset(days=7))]
+    if request.user.is_authenticated:
+        print('ok')
+    else:
+        dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() - pd.DateOffset(days=1))]
+
     dados_sql.to_string(index=False)
     # transforma data para o formato brasileiro
     dados_sql['dataprevista'] = pd.to_datetime(dados_sql['dataprevista'])
     dados_sql['dataprevista'] = dados_sql['dataprevista'].dt.strftime('%d/%m/%Y')
     dados_sql2 = dados_sql.sort_values(by=['meses'], ascending=True)
     dados_sql3 = pd.DataFrame(dados_sql2)
-    dados_sql3 = dados_sql3[['descricao_vacina', 'observacao', 'dataprevista']]
+    if request.user.is_authenticated:
+        dados_sql3 = dados_sql3[['descricao_vacina', 'observacao','meses', 'dataprevista']]
+    else:
+       dados_sql3 = dados_sql3[['descricao_vacina', 'dataprevista']]
     dados_sql3.rename(
         columns={'descricao_vacina': 'Vacina', 'observacao': 'Observações',
-                 'dataprevista': 'Data prevista'},
+                 'dataprevista': 'Data prevista','meses':'Meses'},
         inplace=True
     )
     dados_sql3.to_string(index=False)

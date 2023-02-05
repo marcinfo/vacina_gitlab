@@ -2,7 +2,7 @@ from ninja import  NinjaAPI
 from .models import  TbCalendarioVacina,Vacinas
 
 import json
-apis = NinjaAPI( title = 'API Vacinas Paulistana' )
+apis = NinjaAPI( title = 'API Vacina Paulistana' )
 @apis.get('prazos/')
 def listar(request):
     prazos = TbCalendarioVacina.objects.all()
