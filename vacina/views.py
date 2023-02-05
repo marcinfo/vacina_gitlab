@@ -7,51 +7,35 @@ from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 import pandas as pd
-from dateutil.parser import parse
 import folium
 import requests
 import json
 import socket
-from django.shortcuts import get_object_or_404
-from urllib.parse import urlparse
 
 
 def index(request):
-
-    url = 'https://covid19-brazil-api.now.sh/api/report/v1/brazil/uf/sp'
+    url = 'https://covid19-brazil-api.now.sh/api/report/v1'
     headers = {}
-    response = requests.request('GET', url, headers=headers)
-    dados_covid = json.loads(response.content)
-    dados_covid['datetime'] = pd.to_datetime(dados_covid['datetime'])
-
-    url2 = 'https://covid19-brazil-api.now.sh/api/report/v1/brazil'
-    headers = {}
-    response2 = requests.request('GET', url2, headers=headers)
-    dados_covid2 = json.loads(response2.content)
-
-
-
-    url2 = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    headers = {}
-    response3 = requests.request('GET', url2, data='data', headers=headers)
+    response3 = requests.request('GET', url, data='data', headers=headers)
     dados_covid3 = json.loads(response3.content)
     df = pd.json_normalize(data=dados_covid3['data'])
     df['datetime'] = pd.to_datetime(df['datetime'])
+    df['datetime'] = pd.to_datetime(df['datetime']) - pd.DateOffset(hours=3)
     df['datetime'] = df['datetime'].dt.strftime('%d/%m/%Y %H:%M:%S')
-    df_brasil = df[['cases','deaths','suspects','refuses']].sum().head()
+
+    df_brasil = df[['cases', 'deaths', 'suspects', 'refuses']].sum().head()
     df_sao_paulo = df.query('uf=="SP"')
-    df_sao_paulo = df_sao_paulo[['cases', 'deaths', 'suspects', 'refuses','datetime']].sum().head()
-    df_sao_paulo['cases']=pd.to_numeric(df_sao_paulo['cases'],errors='ignore')
-    print(df_brasil.dtypes)
-    print(df_sao_paulo)
-    return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo,'df_brasil': df_brasil})
+    df_sao_paulo = df_sao_paulo[['cases', 'deaths', 'suspects', 'refuses', 'datetime']].sum().head()
+    df_sao_paulo['cases'] = pd.to_numeric(df_sao_paulo['cases'], errors='ignore')
+
+    return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil})
+
 
 def vacinas_prazos(request):
     nova_data = request.GET.get('data_de_nascimento')
     if nova_data == None:
-        nova_data =datetime.today()
+        nova_data = datetime.today()
     ##transfoma a dataa para o formato intenacional
     vac = TbCalendarioVacina.objects.all().values()
     dados_sql = pd.DataFrame(vac)
@@ -81,7 +65,7 @@ def vacinas_prazos(request):
     dados_sql['dataprevista'] = dados_sql['dataprevista'].dt.strftime('%d/%m/%Y')
     dados_sql2 = dados_sql.sort_values(by=['meses'], ascending=True)
     dados_sql3 = pd.DataFrame(dados_sql2)
-    dados_sql3 = dados_sql3[['descricao_vacina', 'observacao',  'dataprevista']]
+    dados_sql3 = dados_sql3[['descricao_vacina', 'observacao', 'dataprevista']]
     dados_sql3.rename(
         columns={'descricao_vacina': 'Vacina', 'observacao': 'Observções',
                  'dataprevista': 'Data prevista'},
@@ -105,12 +89,12 @@ def encontra_ubs(request):
     ## printing the hostname and ip_address
     print(f"Hostname: {hostname}")
     print(f"IP Local: {ip_address}")
-    ip_address2="187.94.185.34"
+    ip_address2 = "187.94.185.34"
     print(f"IP Address: {ip_address2}")
     ip = requests.get('https://api.ipify.org/')
     response = requests.post(f"http://ip-api.com/json/{ip_address}").json()
     print(response)
-    if (response['status'] !='fail'):
+    if (response['status'] != 'fail'):
         l1 = response['lat']
         l2 = response['lon']
 
@@ -127,7 +111,6 @@ def encontra_ubs(request):
     # mplotagem do mapa
     m = folium.Map(location=[l1, l2], zoom_start=14, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
-
 
     for _, ubs in geoloc.iterrows():
         folium.Marker(

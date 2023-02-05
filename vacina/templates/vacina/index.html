@@ -7,40 +7,40 @@
 <div class="row">
     <div class="card green">
         <h>Total de Casos em {{dados_covid.uf}}</h>
-        <p>{{df_sao_paulo.cases}}</p>
+        <p>{{df_sao_paulo.cases|floatformat:0}}</p>
     </div>
     <div class="card red">
         <h>Mortes</h>
-        <p>{{df_sao_paulo.deaths}}</p>
+        <p>{{df_sao_paulo.deaths|floatformat:0}}</p>
     </div>
     <div class="card blue">
         <h>Suspeitos(24 horas) </h>
-        <p>{{df_sao_paulo.suspects}}</p>
+        <p>{{df_sao_paulo.suspects|floatformat:0}}</p>
     </div>
 
     <div class="card negativo">
         <h>Negativos(24 horas)</h>
-        <p>{{df_sao_paulo.refuses}}</p>
+        <p>{{df_sao_paulo.refuses|floatformat:0}}</p>
     </div>
 
 </div>
 <div class="row">
     <div class="card green">
         <h>Total de Casos no Brasil</h>
-        <p>{{df_brasil.cases}}</p>
+        <p>{{df_brasil.cases|floatformat:0}}</p>
     </div>
     <div class="card red">
         <h>Mortes</h>
-        <p>{{df_brasil.deaths}}</p>
+        <p>{{df_brasil.deaths|floatformat:0}}</p>
     </div>
     <div class="card blue">
         <h>Suspeitos(24 horas)</h>
-        <p>{{df_brasil.suspects}}</p>
+        <p>{{df_brasil.suspects|floatformat:0}}</p>
     </div>
 
     <div class="card negativo">
         <h>Negativos(24 horas)</h>
-        <p>{{df_brasil.refuses}}</p>
+        <p>{{df_brasil.refuses|floatformat:0}}</p>
     </div>
 
 </div>

@@ -131,6 +131,8 @@ LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 
+THOUSAND_SEPARATOR='.'
+USE_THOUSAND_SEPARATOR=True
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
