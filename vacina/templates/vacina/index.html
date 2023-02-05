@@ -6,7 +6,7 @@
 <body>
 <div class="row">
     <div class="card green">
-        <h>Total de Casos em {{dados_covid.uf}}</h>
+        <h>Casos em {{df_sao_paulo.uf}}</h>
         <p>{{df_sao_paulo.cases|floatformat:0}}</p>
     </div>
     <div class="card red">
@@ -26,7 +26,7 @@
 </div>
 <div class="row">
     <div class="card green">
-        <h>Total de Casos no Brasil</h>
+        <h>Casos no Brasil</h>
         <p>{{df_brasil.cases|floatformat:0}}</p>
     </div>
     <div class="card red">
@@ -44,7 +44,7 @@
     </div>
 
 </div>
-<h5 align = "right"> Atualizado em {{df_sao_paulo.datetime}}.</h5>
+<h5 align = "right">Atualizado em <strong>{{df_data_atualizacao.datetime}}.</strong></h5>
 
 </body>
 </html>

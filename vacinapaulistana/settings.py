@@ -136,3 +136,12 @@ USE_THOUSAND_SEPARATOR=True
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+"""
+EMAIL_HOST ='smtp.gmail.com'
+EMAIL_HOST_USER ='marcelosantos170@gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USER_TSL = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_PASSWORD = 'M@rcela20'
+DEFAULT_FROM_EMAIL = 'rpixwmpzrjcwhpwf'
+"""

@@ -1,6 +1,5 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -26,10 +25,15 @@ def index(request):
 
     df_brasil = df[['cases', 'deaths', 'suspects', 'refuses']].sum().head()
     df_sao_paulo = df.query('uf=="SP"')
-    df_sao_paulo = df_sao_paulo[['cases', 'deaths', 'suspects', 'refuses', 'datetime']].sum().head()
+    df_sao_paulo = df_sao_paulo[['uf','cases', 'deaths', 'suspects', 'refuses', 'datetime']].sum().head()
     df_sao_paulo['cases'] = pd.to_numeric(df_sao_paulo['cases'], errors='ignore')
 
-    return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil})
+    df_data_atualizacao=df.query('uf=="SP"')
+    df_data_atualizacao= df_data_atualizacao[['uf', 'datetime']].sum().head()
+
+
+    return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
+                                                 'df_data_atualizacao':df_data_atualizacao})
 
 
 def vacinas_prazos(request):
@@ -67,7 +71,7 @@ def vacinas_prazos(request):
     dados_sql3 = pd.DataFrame(dados_sql2)
     dados_sql3 = dados_sql3[['descricao_vacina', 'observacao', 'dataprevista']]
     dados_sql3.rename(
-        columns={'descricao_vacina': 'Vacina', 'observacao': 'Observções',
+        columns={'descricao_vacina': 'Vacina', 'observacao': 'Observações',
                  'dataprevista': 'Data prevista'},
         inplace=True
     )
@@ -97,7 +101,6 @@ def encontra_ubs(request):
     if (response['status'] != 'fail'):
         l1 = response['lat']
         l2 = response['lon']
-
     ubs = TbUbsDadosSp.objects.all().values()
     geoloc_ubs = pd.DataFrame(ubs)
     # filtra o dataset com a variavel bairroubs
@@ -107,11 +110,9 @@ def encontra_ubs(request):
     # geo_centraliza = geoloc.iloc[104]
     # print(geo_centraliza)
     # variaveis ppara a plotagem
-
     # mplotagem do mapa
     m = folium.Map(location=[l1, l2], zoom_start=14, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
-
     for _, ubs in geoloc.iterrows():
         folium.Marker(
             location=[ubs['latitude'], ubs['longitude']], popup=ubs['endereçoubs']
@@ -120,7 +121,6 @@ def encontra_ubs(request):
         location=[l1, l2], icon=folium.Icon(color='green', icon='home'), ).add_to(m)
     context = {
         'vacin': 'Encontre a UBS mais proxima de você.',
-
         'm': m._repr_html_()
     }
 
@@ -129,7 +129,6 @@ def encontra_ubs(request):
 
 def minhas_vacinas(request):
     nascimento = request.user.profile.date_of_birth
-
     ##transfoma a dataa para o formato intenacional
     vac = TbCalendarioVacina.objects.all().values()
     dados_sql = pd.DataFrame(vac)
@@ -163,8 +162,7 @@ def minhas_vacinas(request):
     dados_sql3.rename(
         columns={'descricao_vacina': 'Vacina', 'observacao': 'Observções', 'meses': 'Meses',
                  'dataprevista': 'Data Prevista', 'status_vacina': 'Status da Vacina'},
-        inplace=True
-    )
+        inplace=True)
     dados_sql3.to_string(index=False)
     context = {
         'vacin': 'Minhas Vacinas',

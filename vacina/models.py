@@ -19,8 +19,8 @@ class AuthUser(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    date_of_birth = models.DateField(blank=True, null=True)
-    photo = models.ImageField(upload_to='users/%Y/%m/%d/', blank=True)
+    date_of_birth = models.DateField(blank=True, null=True, verbose_name='Data de Nascimento')
+    photo = models.ImageField(upload_to='users/%Y/%m/%d/', blank=True, verbose_name='Foto')
 
 
     def __str__(self):
