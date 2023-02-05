@@ -180,7 +180,6 @@ def minhas_vacinas(request):
         'vacin': 'Minhas Vacinas',
         'dados_sql3': dados_sql3.to_html(classes='table table-stripped', border=1, justify='center', index=False)
     }
-
     return render(request, 'vacina/minhas_vacinas.html', context)
 
 
