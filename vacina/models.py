@@ -23,8 +23,6 @@ class Profile(models.Model):
     def __str__(self):
         return f'Profile for user {self.user.username}'
 
-
-
 class TbCalendarioVacina(models.Model):
     id_vacina = models.AutoField(primary_key=True)
     cod_vacina = models.CharField(max_length=8)
