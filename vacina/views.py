@@ -7,7 +7,6 @@ from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditFor
 from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
 from datetime import datetime
 import pandas as pd
-import pandas.tseries.offsets as ts
 import folium
 import requests
 import json
@@ -95,8 +94,8 @@ def vacinas_prazos(request):
 
 
 def encontra_ubs(request):
-    l1 = "-23.547169"
-    l2 = "-46.636719"
+    l1 = "-23.550164466"
+    l2 = "-46.633664132"
     ## getting the hostname by socket.gethostname() method
     hostname = socket.gethostname()
     ## getting the IP address using socket.gethostbyname() method
@@ -122,14 +121,14 @@ def encontra_ubs(request):
     # print(geo_centraliza)
     # variaveis ppara a plotagem
     # mplotagem do mapa
-    m = folium.Map(location=[l1, l2], zoom_start=14, control_scale=True, width=1090, height=450)
+    m = folium.Map(location=[l1, l2], zoom_start=15, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
     for _, ubs in geoloc.iterrows():
         folium.Marker(
             location=[ubs['latitude'], ubs['longitude']], popup=ubs['endereçoubs']
         ).add_to(m)
     folium.Marker(
-        location=[l1, l2], icon=folium.Icon(color='green', icon='home'), ).add_to(m)
+        location=[l1, l2], icon=folium.Icon(color='red', icon='home'), ).add_to(m)
     context = {
         'vacin': 'Encontre a UBS mais proxima de você.',
         'm': m._repr_html_()
