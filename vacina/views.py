@@ -7,6 +7,7 @@ from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditFor
 from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
 from datetime import datetime
 import pandas as pd
+import pandas.tseries.offsets as ts
 import folium
 import requests
 import json
@@ -56,9 +57,11 @@ def vacinas_prazos(request):
         # adiciona a quaantidade de mêses na data
         # data_prevista = nova_data + relativedelta(months = quantidade_mes)
         data_prevista = pd.to_datetime(nova_data) + pd.DateOffset(months=quantidade_mes)
+        data_prevista=data_prevista + pd.offsets.BusinessDay()
         # incrementa o contador
         conta_mes = conta_mes + 1
         listadata += [data_prevista]
+
         # diasfalta += [dias]
     # adiciona a lista ao dataframe
     dados_sql['dataprevista'] = listadata
@@ -70,6 +73,7 @@ def vacinas_prazos(request):
     dados_sql.to_string(index=False)
     # transforma data para o formato brasileiro
     dados_sql['dataprevista'] = pd.to_datetime(dados_sql['dataprevista'])
+
     dados_sql['dataprevista'] = dados_sql['dataprevista'].dt.strftime('%d/%m/%Y')
     dados_sql2 = dados_sql.sort_values(by=['meses'], ascending=True)
     dados_sql3 = pd.DataFrame(dados_sql2)
@@ -79,7 +83,7 @@ def vacinas_prazos(request):
        dados_sql3 = dados_sql3[['descricao_vacina', 'dataprevista']]
     dados_sql3.rename(
         columns={'descricao_vacina': 'Vacina', 'observacao': 'Observações',
-                 'dataprevista': 'Data prevista','meses':'Meses'},
+                 'dataprevista': 'A partir de','meses':'Meses'},
         inplace=True
     )
     dados_sql3.to_string(index=False)
@@ -152,6 +156,7 @@ def minhas_vacinas(request):
         # adiciona a quaantidade de mêses na data
         # data_prevista = nova_data + relativedelta(months = quantidade_mes)
         data_prevista = pd.to_datetime(nascimento) + pd.DateOffset(months=quantidade_mes)
+        data_prevista = data_prevista + pd.offsets.BusinessDay()
         # incrementa o contador
         conta_mes = conta_mes + 1
         listadata += [data_prevista]
@@ -168,7 +173,7 @@ def minhas_vacinas(request):
     dados_sql3 = dados_sql3[['descricao_vacina', 'observacao', 'meses', 'dataprevista', 'status_vacina']]
     dados_sql3.rename(
         columns={'descricao_vacina': 'Vacina', 'observacao': 'Observções', 'meses': 'Meses',
-                 'dataprevista': 'Data Prevista', 'status_vacina': 'Status da Vacina'},
+                 'dataprevista': 'A partir de', 'status_vacina': 'Status da Vacina'},
         inplace=True)
     dados_sql3.to_string(index=False)
     context = {
