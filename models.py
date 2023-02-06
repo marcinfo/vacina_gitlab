@@ -216,10 +216,4 @@ class VacinaProfile(models.Model):
         db_table = 'vacina_profile'
 
 
-class Vacinas(models.Model):
-    descricao_vacina = models.CharField(max_length=45)
-    observacao = models.CharField(max_length=45)
-    id = models.AutoField(primary_key=True)
-    class Meta:
-        managed = False
-        db_table = 'vacinas'
+

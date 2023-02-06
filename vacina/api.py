@@ -1,5 +1,5 @@
 from ninja import  NinjaAPI
-from .models import  TbCalendarioVacina,Vacinas
+from .models import  TbCalendarioVacina
 
 import json
 apis = NinjaAPI( title = 'API Vacina Paulistana' )
@@ -12,11 +12,3 @@ def listar(request):
 
     return response
 
-@apis.get('vacinas/')
-def listar(request):
-    prazos = TbCalendarioVacina.objects.all()
-    response = [{ 'vacina': i.descricao_vacina,\
-                 'observacao': i.observacao} for i in prazos]
-    print(response)
-
-    return response

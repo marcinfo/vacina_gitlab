@@ -61,7 +61,7 @@ def vacinas_prazos(request):
         # adiciona a quaantidade de mêses na data
         # data_prevista = nova_data + relativedelta(months = quantidade_mes)
         data_prevista = pd.to_datetime(nova_data) + pd.DateOffset(months=quantidade_mes)
-        data_prevista=data_prevista + pd.offsets.BusinessDay()
+        data_prevista=((data_prevista - pd.DateOffset(days=1))+ pd.offsets.BusinessDay())
         # incrementa o contador
         conta_mes = conta_mes + 1
         listadata += [data_prevista]

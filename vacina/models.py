@@ -36,7 +36,7 @@ class TbCalendarioVacina(models.Model):
         managed = False
         db_table = 'tb_calendario_vacina'
         verbose_name = "Tabela de vacina"
-        verbose_name_plural = "Tabela de vacinas"
+        verbose_name_plural = "Cadastro de Vacinas"
 
 
 class TbLoginUsuario(models.Model):
@@ -73,7 +73,7 @@ class TbMunicipios(models.Model):
         managed = False
         db_table = 'tb_municipios'
         verbose_name = "Tabela de municipio"
-        verbose_name_plural = "Tabela de municipios"
+        verbose_name_plural = "Cadastro de Municipios"
 
 class TbUbsDadosBrasil(models.Model):
     cnes = models.TextField(db_column='CNES')  # Field name made lowercase.
@@ -113,14 +113,4 @@ class TbUbsDadosSp(models.Model):
         managed = False
         db_table = 'tb_ubs_dados_sp'
         verbose_name = "Tabela de UBS"
-        verbose_name_plural = "Tabela de UBS"
-class Vacinas(models.Model):
-    id = models.AutoField(primary_key=True)
-    descricao_vacina = models.CharField(max_length=45)
-    observacao = models.CharField(max_length=45)
-
-    class Meta:
-        managed = False
-        db_table = 'vacinas'
-        verbose_name = "vacina"
-        verbose_name_plural = "vacinas"
+        verbose_name_plural = "Cadastro de UBS"

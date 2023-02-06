@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile,TbUbsDadosSp,TbCalendarioVacina,TbMunicipios,Vacinas
+from .models import Profile,TbUbsDadosSp,TbCalendarioVacina,TbMunicipios
 
 
 @admin.register(Profile)
@@ -12,11 +12,7 @@ class TbCalendarioVacinaAdmin(admin.ModelAdmin):
     list_display = ['id_vacina', 'cod_vacina', 'descricao_vacina','observacao','meses']
     search_fields = ('cod_vacina', 'descricao_vacina','observacao','meses')
     ordering = ['descricao_vacina']
-@admin.register(Vacinas)
-class TbCalendarioVacinaAdmin(admin.ModelAdmin):
-    list_display = [ 'id','descricao_vacina','observacao']
-    search_fields = ( 'descricao_vacina','observacao')
-    ordering = ['descricao_vacina']
+
 @admin.register(TbMunicipios)
 class TbMunicipios(admin.ModelAdmin):
     list_display = ['uf','município','região','população_2010']

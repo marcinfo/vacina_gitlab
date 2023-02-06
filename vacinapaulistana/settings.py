@@ -17,8 +17,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'django_adminlte',
-    'django_adminlte_theme',
+    #'django_adminlte',
+    #'django_adminlte_theme',
     'vacina.apps.VacinaConfig',
     #'grappelli',
     'django.contrib.admin',
