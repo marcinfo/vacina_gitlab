@@ -7,44 +7,44 @@
 <div class="row">
     <div class="card green">
         <h>Casos em {{df_sao_paulo.uf}}</h>
-        <p>{{df_sao_paulo.cases|floatformat:0}}</p>
+        <p>{{df_sao_paulo.casos|floatformat:0}}</p>
     </div>
     <div class="card red">
         <h>Mortes</h>
-        <p>{{df_sao_paulo.deaths|floatformat:0}}</p>
+        <p>{{df_sao_paulo.mortes|floatformat:0}}</p>
     </div>
     <div class="card blue">
         <h>Suspeitos(24 horas) </h>
-        <p>{{df_sao_paulo.suspects|floatformat:0}}</p>
+        <p>{{df_sao_paulo.suspeitos|floatformat:0}}</p>
     </div>
 
     <div class="card negativo">
         <h>Negativos(24 horas)</h>
-        <p>{{df_sao_paulo.refuses|floatformat:0}}</p>
+        <p>{{df_sao_paulo.nao_confirmados|floatformat:0}}</p>
     </div>
 
 </div>
 <div class="row">
     <div class="card green">
         <h>Casos no Brasil</h>
-        <p>{{df_brasil.cases|floatformat:0}}</p>
+        <p>{{df_brasil.casos|floatformat:0}}</p>
     </div>
     <div class="card red">
         <h>Mortes</h>
-        <p>{{df_brasil.deaths|floatformat:0}}</p>
+        <p>{{df_brasil.mortes|floatformat:0}}</p>
     </div>
     <div class="card blue">
         <h>Suspeitos(24 horas)</h>
-        <p>{{df_brasil.suspects|floatformat:0}}</p>
+        <p>{{df_brasil.suspeitos|floatformat:0}}</p>
     </div>
 
     <div class="card negativo">
         <h>Negativos(24 horas)</h>
-        <p>{{df_brasil.refuses|floatformat:0}}</p>
+        <p>{{df_brasil.nao_confirmados|floatformat:0}}</p>
     </div>
 
 </div>
-<h5 align = "right">Atualizado em <strong>{{df_data_atualizacao.datetime}}.</strong></h5>
+<h5 align = "right">Atualizado em <strong>{{df_data_atualizacao.atualizacao}}.</strong></h5>
 
 </body>
 </html>

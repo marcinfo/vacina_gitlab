@@ -19,18 +19,23 @@ def index(request):
     response3 = requests.request('GET', url, data='data', headers=headers)
     dados_covid3 = json.loads(response3.content)
     df = pd.json_normalize(data=dados_covid3['data'])
-    df['datetime'] = pd.to_datetime(df['datetime'])
-    df['datetime'] = pd.to_datetime(df['datetime']) - pd.DateOffset(hours=3)
-    df['datetime'] = df['datetime'].dt.strftime('%d/%m/%Y %H:%M:%S')
+    df=df.sort_values(by='cases',ascending=False)
+    df=df.rename(columns={'state':'estado','cases':'casos','deaths':'mortes','suspects':'suspeitos'\
+                          ,'refuses':'nao_confirmados','datetime':'atualizacao'})
+    df = df.reset_index()
+    df['atualizacao'] = pd.to_datetime(df['atualizacao'])
+    df['atualizacao'] = pd.to_datetime(df['atualizacao']) - pd.DateOffset(hours=3)
+    df['atualizacao'] = df['atualizacao'].dt.strftime('%d/%m/%Y %H:%M:%S')
+    df=df[['uf','estado','casos', 'mortes', 'suspeitos', 'nao_confirmados', 'atualizacao']]
 
-    df_brasil = df[['cases', 'deaths', 'suspects', 'refuses']].sum().head()
+    df_brasil = df[['casos', 'mortes', 'suspeitos', 'nao_confirmados']].sum().head()
     df_sao_paulo = df.query('uf=="SP"')
-    df_sao_paulo = df_sao_paulo[['uf','cases', 'deaths', 'suspects', 'refuses', 'datetime']].sum().head()
-    df_sao_paulo['cases'] = pd.to_numeric(df_sao_paulo['cases'], errors='ignore')
+    df_sao_paulo = df_sao_paulo[['uf','casos', 'mortes', 'suspeitos', 'nao_confirmados', 'atualizacao']].sum().head()
+    df_sao_paulo['casos'] = pd.to_numeric(df_sao_paulo['casos'], errors='ignore')
 
     df_data_atualizacao=df.query('uf=="SP"')
-    df_data_atualizacao= df_data_atualizacao[['uf', 'datetime']].sum().head()
-
+    df_data_atualizacao= df_data_atualizacao[['uf', 'atualizacao']].sum().head()
+    print(df)
 
     return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
                                                  'df_data_atualizacao':df_data_atualizacao})
