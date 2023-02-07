@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 admin.AdminSite.site_header = 'Vacina Paulistana'
 admin.AdminSite.site_title = 'Painel do Administrador'
-admin.AdminSite.index_title ='Vacina Paulistana'
+admin.AdminSite.index_title ='Painel do Administrador'
 urlpatterns = [
     #path('grappelli/', include('grappelli.urls')),
     path('vacina_admin_painel/', admin.site.urls),

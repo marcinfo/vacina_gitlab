@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
-from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
+from .models import Profile, TbCalendarioVacina, TbUbsDadosSp,TbMunicipios
 from datetime import datetime
 import pandas as pd
 import folium
@@ -35,7 +35,10 @@ def index(request):
 
     df_data_atualizacao=df.query('uf=="SP"')
     df_data_atualizacao= df_data_atualizacao[['uf', 'atualizacao']].sum().head()
-    print(df)
+
+
+
+
 
     return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
                                                  'df_data_atualizacao':df_data_atualizacao})
