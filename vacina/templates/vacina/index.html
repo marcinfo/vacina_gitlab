@@ -4,6 +4,7 @@
 
 {% block content %}
 <body>
+
 <div class="row">
     <div class="card green">
         <h>Casos em {{df_sao_paulo.uf}}</h>
@@ -14,37 +15,53 @@
         <p>{{df_sao_paulo.mortes|floatformat:0}}</p>
     </div>
     <div class="card blue">
-        <h>Suspeitos(24 horas) </h>
-        <p>{{df_sao_paulo.suspeitos|floatformat:0}}</p>
-    </div>
-
-    <div class="card negativo">
-        <h>Negativos(24 horas)</h>
-        <p>{{df_sao_paulo.nao_confirmados|floatformat:0}}</p>
-    </div>
-
-</div>
-<div class="row">
-    <div class="card green">
-        <h>Casos no Brasil</h>
-        <p>{{df_brasil.casos|floatformat:0}}</p>
-    </div>
-    <div class="card red">
-        <h>Mortes</h>
-        <p>{{df_brasil.mortes|floatformat:0}}</p>
+        <h>Enfermaria(ocupação)</h>
+        <p>{{leitos_ocupados_sp.enfermaria|floatformat:0}}</p>
     </div>
     <div class="card blue">
-        <h>Suspeitos(24 horas)</h>
-        <p>{{df_brasil.suspeitos|floatformat:0}}</p>
+        <h>UTI(ocupação)</h>
+        <p>{{leitos_ocupados_sp.uti|floatformat:0}}</p>
     </div>
+</div>
+<p align="center"><u>Vacinação</u></p>
+<div class="row">
 
     <div class="card negativo">
-        <h>Negativos(24 horas)</h>
-        <p>{{df_brasil.nao_confirmados|floatformat:0}}</p>
+        <h>1º Dose</h>
+        <p>{{vacina_covid_sp1.dose1|floatformat:0}}</p>
     </div>
-
+    <div class="card negativo">
+        <h>2º Dose</h>
+        <p>{{vacina_covid_sp1.dose2|floatformat:0}}</p>
+    </div>
+    <div class="card negativo">
+        <h>Dose Unica</h>
+        <p>{{vacina_covid_sp1.UNICA|floatformat:0}}</p>
+    </div>
+    <div class="card negativo">
+        <h>Adicional</h>
+        <p>{{vacina_covid_sp2.adicional|floatformat:0}}</p>
+    </div>
 </div>
-<h5 align = "right">Atualizado em <strong>{{df_data_atualizacao.atualizacao}}.</strong></h5>
+<div class="row">
+    <div class="card negativo">
+        <h>Reforço</h>
+        <p>{{vacina_covid_sp2.reforco|floatformat:0}}</p>
+    </div>
+    <div class="card negativo">
+        <h>2º Reforço</h>
+        <p>{{vacina_covid_sp2.reforco2|floatformat:0}}</p>
+    </div>
+    <div class="card negativo">
+        <h>3º Reforço</h>
+        <p>{{vacina_covid_sp2.reforco3|floatformat:0}}</p>
+    </div>
+</div>
+<h5 align="right">Atualizado em <strong>{{atualizacao}}.</strong></h5>
+<h5 align="right">Fontes: </h5>
+<li align="right">https://www.saopaulo.sp.gov.br  </li>
+<li align="right">https://covid19-brazil-api  </li>
+
 
 </body>
 </html>

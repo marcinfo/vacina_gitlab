@@ -317,10 +317,10 @@ img.user-detail {
   background-color:#F0F8FF;
   border-radius: 5px;
   box-shadow: 7px 7px 13px 0px rgba(50, 50, 50, 0.22);
-  padding: 30px;
+  padding: 20px;
   margin: 5px;
-  width: 400px;
-  height:70px;
+  width: 330px;
+  height:50px;
   transition: all 0.3s ease-out;
 }
 
@@ -331,7 +331,7 @@ img.user-detail {
 
 .card p {
   /*color: #a3a5ae;*/
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bolder;
   text-align: center;
 }
@@ -348,12 +348,12 @@ img.user-detail {
 }
 
 .blue {
-  border-left: 3px solid #FF7F50;
+  border-left: 3px solid #FFDEAD;
   color: #FF4500;
 }
 
 .green {
-  border-left: 3px solid #696969;
+  border-left: 3px solid #A9A9A9;
 
 }
 .black {
@@ -361,10 +361,12 @@ img.user-detail {
   color: #191970;
 }
 .red {
-  border-left: 3px solid #DC143C;
-  color: #B22222;
+  border-left: 3px solid #FFB6C1;
+  color: #CD5C5C;
 }
 .negativo {
-  border-left: 3px solid #3CB371;
-  color: #006400;
+
+  border-left: 3px solid #B0C4DE;
+  /*color: #191970;
+  font-size: 12px;*/
 }

@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
-from .models import Profile, TbCalendarioVacina, TbUbsDadosSp,TbMunicipios
-from datetime import datetime
+from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
+from datetime import datetime, timezone
 import pandas as pd
 import folium
 import requests
@@ -15,6 +15,30 @@ import socket
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
+    vacina_covid='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_vacinometro.csv'
+    leitos_publico='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_leitos_ocupados_por_unidade_hospitalar.zip'
+    casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
+    vacina_covid_sp = pd.read_csv(vacina_covid,sep=';')
+    #casos_covid_sp = pd.read_csv(casos_covid, sep=';')
+    leitos_ocupados_sp = pd.read_csv(leitos_publico,sep=';')
+    print(vacina_covid_sp)
+    leitos_ocupados_sp.rename(
+        columns={'Leitos Ocupados / Enfermaria': 'enfermaria','Leitos Ocupados / UTI':'uti'},
+        inplace=True
+    )
+    leitos_ocupados_sp=leitos_ocupados_sp[['enfermaria','uti']].sum().head()
+
+    vacina_covid_sp.rename(
+        columns={'1° DOSE': 'dose1','2° DOSE': 'dose2','3° DOSE': 'dose3',\
+                 'REFORCO': 'reforco','2 REFORCO': 'reforco2','3 REFORCO': 'reforco3',\
+                 'ADICIONAL': 'adicional','Grand Total': 'total'},
+        inplace=True
+    )
+    vacina_covid_sp1 = vacina_covid_sp[[ 'UNICA','dose1','dose2','adicional']]
+    vacina_covid_sp2=vacina_covid_sp[['reforco','reforco2','reforco3','adicional']]
+    vacina_covid_sp2 = vacina_covid_sp2.sum().head()
+    vacina_covid_sp1=vacina_covid_sp1.sum().head()
+    print(vacina_covid_sp2)
     headers = {}
     response3 = requests.request('GET', url, data='data', headers=headers)
     dados_covid3 = json.loads(response3.content)
@@ -38,16 +62,17 @@ def index(request):
 
 
 
-
-
     return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
-                                                 'df_data_atualizacao':df_data_atualizacao})
+                'df_data_atualizacao':df_data_atualizacao,'leitos_ocupados_sp':leitos_ocupados_sp, \
+                'vacina_covid_sp1':vacina_covid_sp1,'vacina_covid_sp2':vacina_covid_sp2,'atualizacao':datetime.today()})
 
 
 def vacinas_prazos(request):
     nova_data = request.GET.get('data_de_nascimento')
+
     if nova_data == None:
         nova_data = datetime.today()
+    data_selecionada=nova_data
     ##transfoma a dataa para o formato intenacional
     vac = TbCalendarioVacina.objects.all().values()
     dados_sql = pd.DataFrame(vac)
@@ -75,7 +100,7 @@ def vacinas_prazos(request):
     if request.user.is_authenticated:
         print('ok')
     else:
-        dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() - pd.DateOffset(days=1))]
+        dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() + pd.DateOffset(days=7))]
 
     dados_sql.to_string(index=False)
     # transforma data para o formato brasileiro
@@ -94,10 +119,13 @@ def vacinas_prazos(request):
         inplace=True
     )
     dados_sql3.to_string(index=False)
+
     context = {
+        'nova_data': datetime.today(),
         'vacin': 'Próximas Vacinas',
         'dados_sql3': dados_sql3.to_html(classes='table table-stripped', border=1, justify='center', index=False)
     }
+    print(data_selecionada)
     return render(request, 'vacina/vacinas_prazos.html', context)
 
 

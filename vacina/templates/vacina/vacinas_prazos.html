@@ -17,12 +17,12 @@
                 {%else%}
                     <p>Para visualizar todos os dados, <a href="{% url "register" %}">registre aqui </a>ou faça o login!</p>
                 {% endif %}
-                <legend>Selecione a <strong>Data de Nascimento</strong> Caso não seja escolhida sera utilizada a data de hoje.</legend>
-                <input type="date"  name="data_de_nascimento" placeholder="01/01/1990"" required><br/><br/>
+                <legend>Selecione a <strong>Data de Nascimento</strong> Caso não seja escolhida sera utilizada a data de hoje. </legend>
+                <input type="date"  name="data_de_nascimento" min="2017-04-01" max="2023-04-30"placeholder="01/01/1990"" required><br/><br/>
                 <input type="submit" value="Calcular">
 
             </form>
-
+            {{nova_data}}
             {% csrf_token %}
             {{dados_sql3|safe}}
         </div>
