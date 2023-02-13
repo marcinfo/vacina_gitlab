@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(SECRET_KEY)
+SECRET_KEY = '@^k78$e&p+sm$!9^u+e&!mnd!ercjq4j-t-k!0$r7-r#i4mf#u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -72,9 +72,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',# nome do driver
         'NAME': 'railway',
         'USER': 'root',
-        'PASSWORD': '201206',
-        'HOST': 'localhost', # não obrigatorio, se desejar pode deixar ja especificado
-        'PORT': '3306',
+        'PASSWORD': 'Psr2ZTQLvsj6ChtzPbfe',
+        'HOST': 'containers-us-west-197.railway.app', # não obrigatorio, se desejar pode deixar ja especificado
+        'PORT': '6648',
 
     }
 }
@@ -110,7 +110,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
