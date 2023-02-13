@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'vacinapaulistana.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-git init
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',# nome do driver
