@@ -19,9 +19,12 @@ def index(request):
     leitos_publico='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_leitos_ocupados_por_unidade_hospitalar.zip'
     casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid,sep=';')
+
+
+
     #casos_covid_sp = pd.read_csv(casos_covid, sep=';')
     leitos_ocupados_sp = pd.read_csv(leitos_publico,sep=';')
-    print(vacina_covid_sp)
+
     leitos_ocupados_sp.rename(
         columns={'Leitos Ocupados / Enfermaria': 'enfermaria','Leitos Ocupados / UTI':'uti'},
         inplace=True
@@ -35,10 +38,11 @@ def index(request):
         inplace=True
     )
     vacina_covid_sp1 = vacina_covid_sp[[ 'UNICA','dose1','dose2','adicional']]
-    vacina_covid_sp2=vacina_covid_sp[['reforco','reforco2','reforco3','adicional']]
+    vacina_covid_sp2=vacina_covid_sp[['reforco','reforco2','reforco3','total']]
+
     vacina_covid_sp2 = vacina_covid_sp2.sum().head()
     vacina_covid_sp1=vacina_covid_sp1.sum().head()
-    print(vacina_covid_sp2)
+
     headers = {}
     response3 = requests.request('GET', url, data='data', headers=headers)
     dados_covid3 = json.loads(response3.content)
@@ -64,7 +68,8 @@ def index(request):
 
     return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
                 'df_data_atualizacao':df_data_atualizacao,'leitos_ocupados_sp':leitos_ocupados_sp, \
-                'vacina_covid_sp1':vacina_covid_sp1,'vacina_covid_sp2':vacina_covid_sp2,'atualizacao':datetime.today()})
+                'vacina_covid_sp1':vacina_covid_sp1,'vacina_covid_sp2':vacina_covid_sp2,\
+                'atualizacao':datetime.today()})
 
 
 def vacinas_prazos(request):

@@ -14,7 +14,7 @@
 
     <ul class="menu">
       <li {% if section == "inicio" %}class="selected"{% endif %}>
-        <a href="{% url "index" %}">inicio</a>
+        <a href="{% url "index" %}">Painel</a>
       </li>
       <li {% if section == "Vacinas disponivel no SUS" %}class="selected"{% endif %}>
         <a href="{% url "vacinas_prazos" %}">Calculadora</a>
@@ -27,7 +27,7 @@
         <a href="{% url "api" %}">API</a>
       </li>-->
       <li {% if section == "links" %}class="selected"{% endif %}>
-        <a href="{% url "links" %}">links</a>
+        <a href="{% url "links" %}">link/API</a>
       </li>
     {% if request.user.is_authenticated %}
       <li {% if section == "Minha Agenda" %}class="selected"{% endif %}>
