@@ -7,9 +7,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@^k78$e&p+sm$!9^u+e&!mnd!ercjq4j-t-k!0$r7-r#i4mf#u'
+SECRET_KEY = os.environ.get('ggdgdgdgdfgdgrttere')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -55,6 +55,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
+
             ],
         },
     },
@@ -65,15 +66,16 @@ WSGI_APPLICATION = 'vacinapaulistana.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
+git init
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',# nome do driver
         'NAME': 'vacina_paulistana',
         'USER': 'root',
-        'PASSWORD': 'Psr2ZTQLvsj6ChtzPbfe',
-        'HOST': 'containers-us-west-197.railway.app', # não obrigatorio, se desejar pode deixar ja especificado
-        'PORT': '6648',
+        'PASSWORD': '201206',
+        'HOST': 'localhost', # não obrigatorio, se desejar pode deixar ja especificado
+        'PORT': '3306',
+
     }
 }
 
@@ -108,7 +110,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -117,6 +119,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 SECURE_HSTS_SECONDS = True
 SECURE_HSTS_INCLUDE_SUBDDOMAINS = True

@@ -1,0 +1,1 @@
+web: vacinapaulistana.wsgi --log-file -
