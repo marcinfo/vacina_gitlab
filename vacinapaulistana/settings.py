@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@^k78$e&p+sm$!9^u+e&'
+SECRET_KEY = os.environ.get(SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -70,7 +70,7 @@ WSGI_APPLICATION = 'vacinapaulistana.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',# nome do driver
-        'NAME': 'vacina_paulistana',
+        'NAME': 'railway',
         'USER': 'root',
         'PASSWORD': '201206',
         'HOST': 'localhost', # não obrigatorio, se desejar pode deixar ja especificado
