@@ -71,9 +71,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',# nome do driver
         'NAME': 'vacina_paulistana',
         'USER': 'root',
-        'PASSWORD': '201206',
-        'HOST': 'localhost', # não obrigatorio, se desejar pode deixar ja especificado
-        'PORT': '3306',
+        'PASSWORD': 'Psr2ZTQLvsj6ChtzPbfe',
+        'HOST': 'containers-us-west-197.railway.app', # não obrigatorio, se desejar pode deixar ja especificado
+        'PORT': '6648',
     }
 }
 
@@ -117,7 +117,7 @@ USE_TZ = True
 STATIC_URL = '/STATIC/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-STATIC_ROOT = os.path.join(BASE_DIR, "STATIC/")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles/")
 
 
 SECURE_HSTS_SECONDS = True
