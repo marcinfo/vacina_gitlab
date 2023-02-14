@@ -10,9 +10,10 @@
 </head>
 <body>
   <div id="header">
-    <span class="logo">Vacina Paulistana <small></small></span>
+    <span class="logo">Vacina Paulistana </span>
 
     <ul class="menu">
+
       <li {% if section == "inicio" %}class="selected"{% endif %}>
         <a href="{% url "index" %}">Painel</a>
       </li>
@@ -45,6 +46,7 @@
     {% if request.user.is_authenticated %}
       Olá {{ request.user.first_name }},
       <a href="{% url "logout" %}">Logout</a>
+
     {% else %}
       <a href="{% url "login" %}">login</a>
     {% endif %}
@@ -61,8 +63,10 @@
       {% endfor %}
     </ul>
   {% endif %}
+
   <div id="content">
     {% block content %}
+
     {% endblock %}
   </div>
 
@@ -71,10 +75,13 @@
     <div vw-plugin-wrapper>
       <div class="vw-plugin-top-wrapper"></div>
     </div>
+
   </div>
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   <script>
     new window.VLibras.Widget('https://vlibras.gov.br/app');
   </script>
+
 </body>
+
 </html>
