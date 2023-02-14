@@ -32,6 +32,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+      'django.middleware.security.SecurityMiddleware',
+      'whitenoise.middleware.WhiteNoiseMiddleware',
+  # Certifique-se que o WhiteNoise seja adiciona
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -112,11 +115,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/STATIC/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles/")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 
 SECURE_HSTS_SECONDS = True
@@ -136,13 +140,13 @@ THOUSAND_SEPARATOR='.'
 USE_THOUSAND_SEPARATOR=True
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 """
 EMAIL_HOST ='smtp.gmail.com'
-EMAIL_HOST_USER ='marcelosantos170@gmail.com'
+EMAIL_HOST_USER ='marcelo@gmail.com'
 EMAIL_PORT = '587'
 EMAIL_USER_TSL = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_PASSWORD = 'M@rcela20'
+EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = 'rpixwmpzrjcwhpwf'
 """
