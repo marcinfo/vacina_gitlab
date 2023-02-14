@@ -11,7 +11,7 @@ import folium
 import requests
 import json
 import socket
-
+import pytz
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
@@ -61,16 +61,15 @@ def index(request):
     df_sao_paulo = df_sao_paulo[['uf','casos', 'mortes', 'suspeitos', 'nao_confirmados', 'atualizacao']].sum().head()
     df_sao_paulo['casos'] = pd.to_numeric(df_sao_paulo['casos'], errors='ignore')
 
-    df_data_atualizacao=df.query('uf=="SP"')
-    df_data_atualizacao= df_data_atualizacao[['atualizacao']]
 
 
+    df_data_atualizacao = datetime.now(pytz.timezone('America/Sao_Paulo'))
 
 
     return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
                 'df_data_atualizacao':df_data_atualizacao,'leitos_ocupados_sp':leitos_ocupados_sp, \
                 'vacina_covid_sp1':vacina_covid_sp1,'vacina_covid_sp2':vacina_covid_sp2,\
-                'atualizacao':datetime.today()})
+                'atualizacao':df_data_atualizacao})
 
 
 def vacinas_prazos(request):
