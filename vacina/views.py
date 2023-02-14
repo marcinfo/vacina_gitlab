@@ -66,6 +66,7 @@ def index(request):
 
 
 
+
     return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
                 'df_data_atualizacao':df_data_atualizacao,'leitos_ocupados_sp':leitos_ocupados_sp, \
                 'vacina_covid_sp1':vacina_covid_sp1,'vacina_covid_sp2':vacina_covid_sp2,\
