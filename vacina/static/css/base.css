@@ -122,7 +122,7 @@ form {
 
 form p {
     width:100%;
-    overflow:auto;
+    overflow:hide;
 }
 
 
@@ -331,13 +331,13 @@ img.user-detail {
 
 .card p {
   /*color: #a3a5ae;*/
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bolder;
   text-align: center;
 }
 .card h {
   color: #191970;
-  font-size: 14px;
+  font-size: 12px;
   text-align: center;
 
 }

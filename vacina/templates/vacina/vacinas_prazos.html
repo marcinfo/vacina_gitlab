@@ -22,9 +22,11 @@
                 <input type="submit" value="Calcular">
 
             </form>
+            <div>
             {{nova_data}}
             {% csrf_token %}
             {{dados_sql3|safe}}
+                </div>
         </div>
     </div>
 </div>
