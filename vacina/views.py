@@ -102,12 +102,12 @@ def vacinas_prazos(request):
         # diasfalta += [dias]
     # adiciona a lista ao dataframe
     dados_sql['dataprevista'] = listadata
-    """
+
     if request.user.is_authenticated:
         print('ok')
     else:
         dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() + pd.DateOffset(days=7))]
-    """
+
     dados_sql.to_string(index=False)
     # transforma data para o formato brasileiro
     dados_sql['dataprevista'] = pd.to_datetime(dados_sql['dataprevista'])
@@ -148,7 +148,7 @@ def encontra_ubs(request):
     ip_address2 = "187.94.185.34"
     print(f"IP Address: {ip_address2}")
     ip = requests.get('https://api.ipify.org/')
-    response = requests.post(f"http://ip-api.com/json/{ip}").json()
+    response = requests.post(f"http://ip-api.com/json/{ip_address}").json()
     print(response)
     if (response['status'] != 'fail'):
         l1 = response['lat']
