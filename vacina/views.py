@@ -20,8 +20,8 @@ def index(request):
     #casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid,sep=';')
 
-
-
+    #leitos=   pd.read_csv(leitos_publico,sep=';').sum().head()
+    #print(leitos[['Leitos Ocupados / Enfermaria']])
     #casos_covid_sp = pd.read_csv(casos_covid, sep=';')
     leitos_ocupados_sp = pd.read_csv(leitos_publico,sep=';')
 
@@ -62,7 +62,7 @@ def index(request):
     df_sao_paulo['casos'] = pd.to_numeric(df_sao_paulo['casos'], errors='ignore')
 
     df_data_atualizacao=df.query('uf=="SP"')
-    df_data_atualizacao= df_data_atualizacao[['uf', 'atualizacao']].sum().head()
+    df_data_atualizacao= df_data_atualizacao[['atualizacao']]
 
 
 
@@ -102,11 +102,12 @@ def vacinas_prazos(request):
         # diasfalta += [dias]
     # adiciona a lista ao dataframe
     dados_sql['dataprevista'] = listadata
+    """
     if request.user.is_authenticated:
         print('ok')
     else:
         dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() + pd.DateOffset(days=7))]
-
+    """
     dados_sql.to_string(index=False)
     # transforma data para o formato brasileiro
     dados_sql['dataprevista'] = pd.to_datetime(dados_sql['dataprevista'])
