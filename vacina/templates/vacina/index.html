@@ -4,10 +4,10 @@
 
 {% block content %}
 <body>
-
+<h3 align="center"><u>Casos de Covid19 em {{df_sao_paulo.uf}}</u></h3>
 <div class="row">
     <div class="card green">
-        <h>Casos de Covid em {{df_sao_paulo.uf}} </h>
+        <h>Total  </h>
         <p>{{df_sao_paulo.casos|floatformat:0}}</p>
     </div>
     <div class="card red">
@@ -65,7 +65,8 @@
 
 
 <footer>
- <h6 align="right">versão 2.0.6</h6>
+
+    <h6 align="left">Fontes de Dados: <a href="https://www.saopaulo.sp.gov.br">Governo do Estado de São Paulo</a>    ,     <a href="https://www.saopaulo.sp.gov.br">covid19-brazil</a></h6>
 </footer>
 
 </body>
