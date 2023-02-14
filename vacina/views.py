@@ -136,13 +136,12 @@ def vacinas_prazos(request):
 
 
 def encontra_ubs(request):
-
     l1 = "-23.550164466"
     l2 = "-46.633664132"
     ## getting the hostname by socket.gethostname() method
     hostname = socket.gethostname()
     ## getting the IP address using socket.gethostbyname() method
-    ip_address = socket.gethostbyname(hostname)
+    ip_address = socket.gethostbyname(socket.gethostname())
     ## printing the hostname and ip_address
     print(f"Hostname: {hostname}")
     print(f"IP Local: {ip_address}")
@@ -150,12 +149,11 @@ def encontra_ubs(request):
     print(f"IP Address: {ip_address2}")
     ip = requests.get('https://api.ipify.org/')
     response = requests.post(f"http://ip-api.com/json/{ip_address}").json()
+
     print(response)
     if (response['status'] != 'fail'):
         l1 = response['lat']
         l2 = response['lon']
-        print(l1)
-        print(l2)
     ubs = TbUbsDadosSp.objects.all().values()
     geoloc_ubs = pd.DataFrame(ubs)
     # filtra o dataset com a variavel bairroubs
