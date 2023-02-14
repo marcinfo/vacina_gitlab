@@ -4,10 +4,10 @@
 
 {% block content %}
 <body>
-<p align="center"><u>Covid em {{df_sao_paulo.uf}}</u></p>
+
 <div class="row">
     <div class="card green">
-        <h>Total </h>
+        <h>Casos de Covid em {{df_sao_paulo.uf}} </h>
         <p>{{df_sao_paulo.casos|floatformat:0}}</p>
     </div>
     <div class="card red">
@@ -23,7 +23,7 @@
         <p>{{leitos_ocupados_sp.uti|floatformat:0}}</p>
     </div>
 </div>
-<p align="center"><u>Vacinação</u></p>
+<h3 align="center"><u>Vacinação</u></h3>
 <div class="row">
 
     <div class="card negativo">
@@ -61,9 +61,13 @@
         <p>{{vacina_covid_sp2.total|floatformat:0}}</p>
     </div>
 </div>
-<h5 align="right">Atualizado em <strong>{{atualizacao}}.</strong></h5>
+<h5 align="right">Atualizado em <strong>{{atualizacao}}.</strong> </h5>
 
 
+<footer>
+ <h6 align="right">versão 2.0.0</h6>
+
+</footer>
 
 </body>
 </html>
