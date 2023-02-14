@@ -125,9 +125,9 @@ def vacinas_prazos(request):
         inplace=True
     )
     dados_sql3.to_string(index=False)
-
+    df_data_atualizacao = datetime.now(pytz.timezone('America/Sao_Paulo'))
     context = {
-        'nova_data': datetime.today(),
+        'nova_data': df_data_atualizacao,
         'vacin': 'Próximas Vacinas',
         'dados_sql3': dados_sql3.to_html(classes='table table-stripped', border=1, justify='center', index=False)
     }
