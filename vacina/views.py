@@ -11,7 +11,7 @@ import folium
 import requests
 import json
 import socket
-
+import geocoder
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
@@ -136,6 +136,9 @@ def vacinas_prazos(request):
 
 
 def encontra_ubs(request):
+    g = geocoder.ip('me')
+    g.latlng
+    '''
     l1 = "-23.550164466"
     l2 = "-46.633664132"
     ## getting the hostname by socket.gethostname() method
@@ -150,9 +153,13 @@ def encontra_ubs(request):
     ip = requests.get('https://api.ipify.org/')
     response = requests.post(f"http://ip-api.com/json/{ip_address}").json()
     print(response)
-    if (response['status'] != 'fail'):
-        l1 = response['lat']
-        l2 = response['lon']
+    '''
+
+
+    l1 =g.lat
+    l2 = g.lng
+    print(l1)
+    print(l2)
     ubs = TbUbsDadosSp.objects.all().values()
     geoloc_ubs = pd.DataFrame(ubs)
     # filtra o dataset com a variavel bairroubs
