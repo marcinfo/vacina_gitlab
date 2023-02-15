@@ -6,10 +6,48 @@
 {% load static %}
 
 <!-- Page Content -->
+<h2></h2>
+<p id="demox">Clique no botão para receber as coordenadas: (EM TESTE)</p>
+<button onclick="getLocation()">Clique Aqui</button>
+<script>
+var x=document.getElementById("demo");
+function getLocation()
+  {
+  if (navigator.geolocation)
+    {
+    navigator.geolocation.getCurrentPosition(showPosition,showError);
+    }
+  else{x.innerHTML="Seu browser não suporta Geolocalização.";}
+  }
+function showPosition(position)
+  {
+  x.innerHTML="(" + position.coords.latitude +
+  "," + position.coords.longitude+")" ;
+  }
+function showError(error)
+  {
+  switch(error.code)
+    {
+    case error.PERMISSION_DENIED:
+      x.innerHTML="Usuário rejeitou a solicitação de Geolocalização."
+      break;
+    case error.POSITION_UNAVAILABLE:
+      x.innerHTML="Localização indisponível."
+      break;
+    case error.TIMEOUT:
+      x.innerHTML="A requisição expirou."
+      break;
+    case error.UNKNOWN_ERROR:
+      x.innerHTML="Algum erro desconhecido aconteceu."
+      break;
+    }
+  }
+</script>
+
+
+(EM TESTE)
 <div align="center" >
-
-
-    <h3>Encontre a UBS mais próxima de você! </h3>
+    <h4>(EM TESTE) </h4>
     <h3<h3
     {{ m|safe }}
 
