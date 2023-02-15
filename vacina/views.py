@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
-from datetime import datetime, timezone
+from datetime import datetime
 import pandas as pd
 import folium
 import requests
@@ -19,6 +19,7 @@ def index(request):
     leitos_publico='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_leitos_ocupados_por_unidade_hospitalar.zip'
     #casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid,sep=';')
+    vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
 
     #leitos=   pd.read_csv(leitos_publico,sep=';').sum().head()
     #print(leitos[['Leitos Ocupados / Enfermaria']])
@@ -38,11 +39,10 @@ def index(request):
         inplace=True
     )
     vacina_covid_sp1 = vacina_covid_sp[[ 'UNICA','dose1','dose2','adicional']]
-    vacina_covid_sp2=vacina_covid_sp[['reforco','reforco2','reforco3','total']]
 
-    vacina_covid_sp2 = vacina_covid_sp2.sum().head()
-    vacina_covid_sp1=vacina_covid_sp1.sum().head()
 
+    vacina_covid_sp1=vacina_covid_sp.sum()
+    print(vacina_covid_sp1)
     headers = {}
     response3 = requests.request('GET', url, data='data', headers=headers)
     dados_covid3 = json.loads(response3.content)
@@ -61,15 +61,12 @@ def index(request):
     df_sao_paulo = df_sao_paulo[['uf','casos', 'mortes', 'suspeitos', 'nao_confirmados', 'atualizacao']].sum().head()
     df_sao_paulo['casos'] = pd.to_numeric(df_sao_paulo['casos'], errors='ignore')
 
-
-
     df_data_atualizacao = datetime.now(pytz.timezone('America/Sao_Paulo'))
 
 
     return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
                 'df_data_atualizacao':df_data_atualizacao,'leitos_ocupados_sp':leitos_ocupados_sp, \
-                'vacina_covid_sp1':vacina_covid_sp1,'vacina_covid_sp2':vacina_covid_sp2,\
-                'atualizacao':df_data_atualizacao})
+                'vacina_covid_sp1':vacina_covid_sp1,'atualizacao':df_data_atualizacao})
 
 
 def vacinas_prazos(request):
