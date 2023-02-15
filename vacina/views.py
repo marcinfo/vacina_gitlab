@@ -21,8 +21,8 @@ def index(request):
     vacina_covid_sp = pd.read_csv(vacina_covid,sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
 
-    #leitos=   pd.read_csv(leitos_publico,sep=';').sum().head()
-    #print(leitos[['Leitos Ocupados / Enfermaria']])
+
+
     #casos_covid_sp = pd.read_csv(casos_covid, sep=';')
     leitos_ocupados_sp = pd.read_csv(leitos_publico,sep=';')
 
@@ -133,8 +133,7 @@ def vacinas_prazos(request):
 
 
 def encontra_ubs(request):
-    l1 = "-23.550164466"
-    l2 = "-46.633664132"
+
     ## getting the hostname by socket.gethostname() method
     hostname = socket.gethostname()
     ## getting the IP address using socket.gethostbyname() method
@@ -142,15 +141,23 @@ def encontra_ubs(request):
     ## printing the hostname and ip_address
     print(f"Hostname: {hostname}")
     print(f"IP Local: {ip_address}")
-    ip_address2 = "187.94.185.34"
+    ip_address2 = "189.46.121.31"
     print(f"IP Address: {ip_address2}")
     ip = requests.get('https://api.ipify.org/')
     response = requests.post(f"http://ip-api.com/json/{ip_address}").json()
 
     print(response)
-    if (response['status'] != 'fail'):
+
+
+    if (response['status'] == 'success'):
+        print(response['status'])
+        print(response['lat'])
+        print(response['lon'])
         l1 = response['lat']
         l2 = response['lon']
+    else:
+        l1 = "-23.550164466"
+        l2 = "-46.633664132"
     ubs = TbUbsDadosSp.objects.all().values()
     geoloc_ubs = pd.DataFrame(ubs)
     # filtra o dataset com a variavel bairroubs
