@@ -15,12 +15,11 @@ import pytz
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_vacinometro.csv'
-    leitos_publico='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_leitos_ocupados_por_unidade_hospitalar.zip'
+    vacina_covid='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_vacinometro.csv'
+    leitos_publico='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_leitos_ocupados_por_unidade_hospitalar.zip'
     #casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid,sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
-
 
 
     #casos_covid_sp = pd.read_csv(casos_covid, sep=';')
@@ -133,31 +132,22 @@ def vacinas_prazos(request):
 
 
 def encontra_ubs(request):
+    l1 = "-23.550164466"
+    l2 = "-46.633664132"
+    lat_get = request.GET.get('lat')
+    lon_get = request.GET.get('lon')
+    if(lat_get != None) & (lon_get != None) :
+        latitude = str(lat_get)
+        longitude = str(lon_get)
+        l1 = latitude
+        l2 = longitude
 
-    ## getting the hostname by socket.gethostname() method
-    hostname = socket.gethostname()
-    ## getting the IP address using socket.gethostbyname() method
-    ip_address = socket.gethostbyname(socket.gethostname())
-    ## printing the hostname and ip_address
-    print(f"Hostname: {hostname}")
-    print(f"IP Local: {ip_address}")
-    ip_address2 = "189.46.121.31"
-    print(f"IP Address: {ip_address2}")
-    ip = requests.get('https://api.ipify.org/')
-    response = requests.post(f"http://ip-api.com/json/{ip_address}").json()
-
-    print(response)
-
-
-    if (response['status'] == 'success'):
-        print(response['status'])
-        print(response['lat'])
-        print(response['lon'])
-        l1 = response['lat']
-        l2 = response['lon']
     else:
-        l1 = "-23.550164466"
-        l2 = "-46.633664132"
+        l1 = l1
+        l2 = l2
+    print(l1)
+    print(l2)
+
     ubs = TbUbsDadosSp.objects.all().values()
     geoloc_ubs = pd.DataFrame(ubs)
     # filtra o dataset com a variavel bairroubs
@@ -168,7 +158,7 @@ def encontra_ubs(request):
     # print(geo_centraliza)
     # variaveis ppara a plotagem
     # mplotagem do mapa
-    m = folium.Map(location=[l1, l2], zoom_start=15, control_scale=True, width=1090, height=450)
+    m = folium.Map(location=[l1, l2], zoom_start=14, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
     for _, ubs in geoloc.iterrows():
         folium.Marker(

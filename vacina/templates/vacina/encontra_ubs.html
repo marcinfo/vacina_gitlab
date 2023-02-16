@@ -6,9 +6,10 @@
 {% load static %}
 
 <!-- Page Content -->
-<h2></h2>
-<p id="demox"> (EM TESTE)</p>
-<button onclick="getLocation()">Clique Aqui</button>
+
+<p id="demo"></p>
+<h5>Para localizar a UBS mais próxima <button onclick="getLocation()">Clique Aqui</button></h5>
+
 <script>
 var x=document.getElementById("demo");
 function getLocation()
@@ -21,8 +22,8 @@ function getLocation()
   }
 function showPosition(position)
   {
-  x.innerHTML="(" + position.coords.latitude +
-  "," + position.coords.longitude+")" ;
+
+  window.location.href = "/encontra_ubs/?lat=" +  position.coords.latitude +"&lon=" + position.coords.longitude;
   }
 function showError(error)
   {
@@ -43,16 +44,9 @@ function showError(error)
     }
   }
 </script>
-
-
-(EM TESTE)
 <div align="center" >
-    <h4>(EM TESTE) </h4>
-    <h3<h3
     {{ m|safe }}
-
 </div>
-
 </body>
 </html>
 {% endblock  %}
