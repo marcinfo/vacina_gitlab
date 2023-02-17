@@ -122,7 +122,7 @@ class TbCalendarioVacina(models.Model):
     id_vacina = models.AutoField(primary_key=True)
     cod_vacina = models.CharField(max_length=8)
     descricao_vacina = models.CharField(max_length=45)
-    observacao = models.CharField(max_length=45)
+    observacao = models.TextField()
     meses = models.IntegerField()
     status_vacina = models.CharField(max_length=45, blank=True, null=True)
 
@@ -166,16 +166,6 @@ class TbMunicipios(models.Model):
         db_table = 'tb_municipios'
 
 
-class TbUbsDadosBrasil(models.Model):
-    cnes = models.TextField(db_column='CNES')  # Field name made lowercase.
-    uf = models.IntegerField(db_column='UF', blank=True, null=True)  # Field name made lowercase.
-    ibge = models.IntegerField(db_column='IBGE', blank=True, null=True)  # Field name made lowercase.
-    nome = models.TextField(db_column='NOME', blank=True, null=True)  # Field name made lowercase.
-    logradouro = models.TextField(db_column='LOGRADOURO', blank=True, null=True)  # Field name made lowercase.
-    bairro = models.TextField(db_column='BAIRRO', blank=True, null=True)  # Field name made lowercase.
-    latitude = models.TextField(db_column='LATITUDE', blank=True, null=True)  # Field name made lowercase.
-    longitude = models.TextField(db_column='LONGITUDE', blank=True, null=True)  # Field name made lowercase.
-    idubsbrasil = models.AutoField(primary_key=True)
 
     class Meta:
         managed = False
@@ -216,4 +206,16 @@ class VacinaProfile(models.Model):
         db_table = 'vacina_profile'
 
 
+class TbUbsDadosBrasil(models.Model):
+    cnes = models.TextField(db_column='CNES')  # Field name made lowercase.
+    uf = models.IntegerField(db_column='UF', blank=True, null=True)  # Field name made lowercase.
+    ibge = models.IntegerField(db_column='IBGE', blank=True, null=True)  # Field name made lowercase.
+    nome = models.TextField(db_column='NOME', blank=True, null=True)  # Field name made lowercase.
+    logradouro = models.TextField(db_column='LOGRADOURO', blank=True, null=True)  # Field name made lowercase.
+    bairro = models.TextField(db_column='BAIRRO', blank=True, null=True)  # Field name made lowercase.
+    latitude = models.TextField(db_column='LATITUDE', blank=True, null=True)  # Field name made lowercase.
+    longitude = models.TextField(db_column='LONGITUDE', blank=True, null=True)  # Field name made lowercase.
 
+    class Meta:
+        managed = False
+        db_table = 'tb_ubs_dados_brasil'

@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
 from datetime import datetime
+from geopy import distance
 import pandas as pd
 import folium
 import requests
@@ -13,59 +14,59 @@ import json
 import socket
 import pytz
 
+
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_vacinometro.csv'
-    leitos_publico='https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_leitos_ocupados_por_unidade_hospitalar.zip'
-    #casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
-    vacina_covid_sp = pd.read_csv(vacina_covid,sep=';')
+    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_vacinometro.csv'
+    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_leitos_ocupados_por_unidade_hospitalar.zip'
+    # casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
+    vacina_covid_sp = pd.read_csv(vacina_covid, sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
 
-
-    #casos_covid_sp = pd.read_csv(casos_covid, sep=';')
-    leitos_ocupados_sp = pd.read_csv(leitos_publico,sep=';')
+    # casos_covid_sp = pd.read_csv(casos_covid, sep=';')
+    leitos_ocupados_sp = pd.read_csv(leitos_publico, sep=';')
 
     leitos_ocupados_sp.rename(
-        columns={'Leitos Ocupados / Enfermaria': 'enfermaria','Leitos Ocupados / UTI':'uti'},
+        columns={'Leitos Ocupados / Enfermaria': 'enfermaria', 'Leitos Ocupados / UTI': 'uti'},
         inplace=True
     )
-    leitos_ocupados_sp=leitos_ocupados_sp[['enfermaria','uti']].sum().head()
+    leitos_ocupados_sp = leitos_ocupados_sp[['enfermaria', 'uti']].sum().head()
 
     vacina_covid_sp.rename(
-        columns={'1° DOSE': 'dose1','2° DOSE': 'dose2','3° DOSE': 'dose3',\
-                 'REFORCO': 'reforco','2 REFORCO': 'reforco2','3 REFORCO': 'reforco3',\
-                 'ADICIONAL': 'adicional','Grand Total': 'total'},
+        columns={'1° DOSE': 'dose1', '2° DOSE': 'dose2', '3° DOSE': 'dose3', \
+                 'REFORCO': 'reforco', '2 REFORCO': 'reforco2', '3 REFORCO': 'reforco3', \
+                 'ADICIONAL': 'adicional', 'Grand Total': 'total'},
         inplace=True
     )
-    vacina_covid_sp1 = vacina_covid_sp[[ 'UNICA','dose1','dose2','adicional']]
+    vacina_covid_sp1 = vacina_covid_sp[['UNICA', 'dose1', 'dose2', 'adicional']]
 
+    vacina_covid_sp1 = vacina_covid_sp.sum()
 
-    vacina_covid_sp1=vacina_covid_sp.sum()
-    print(vacina_covid_sp1)
     headers = {}
     response3 = requests.request('GET', url, data='data', headers=headers)
     dados_covid3 = json.loads(response3.content)
     df = pd.json_normalize(data=dados_covid3['data'])
-    df=df.sort_values(by='cases',ascending=False)
-    df=df.rename(columns={'state':'estado','cases':'casos','deaths':'mortes','suspects':'suspeitos'\
-                          ,'refuses':'nao_confirmados','datetime':'atualizacao'})
+    df = df.sort_values(by='cases', ascending=False)
+    df = df.rename(columns={'state': 'estado', 'cases': 'casos', 'deaths': 'mortes', 'suspects': 'suspeitos' \
+        , 'refuses': 'nao_confirmados', 'datetime': 'atualizacao'})
     df = df.reset_index()
     df['atualizacao'] = pd.to_datetime(df['atualizacao'])
     df['atualizacao'] = pd.to_datetime(df['atualizacao']) - pd.DateOffset(hours=3)
     df['atualizacao'] = df['atualizacao'].dt.strftime('%d/%m/%Y %H:%M:%S')
-    df=df[['uf','estado','casos', 'mortes', 'suspeitos', 'nao_confirmados', 'atualizacao']]
+    df = df[['uf', 'estado', 'casos', 'mortes', 'suspeitos', 'nao_confirmados', 'atualizacao']]
 
     df_brasil = df[['casos', 'mortes', 'suspeitos', 'nao_confirmados']].sum().head()
     df_sao_paulo = df.query('uf=="SP"')
-    df_sao_paulo = df_sao_paulo[['uf','casos', 'mortes', 'suspeitos', 'nao_confirmados', 'atualizacao']].sum().head()
+    df_sao_paulo = df_sao_paulo[['uf', 'casos', 'mortes', 'suspeitos', 'nao_confirmados', 'atualizacao']].sum().head()
     df_sao_paulo['casos'] = pd.to_numeric(df_sao_paulo['casos'], errors='ignore')
 
     df_data_atualizacao = datetime.now(pytz.timezone('America/Sao_Paulo'))
 
-
-    return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil,\
-                'df_data_atualizacao':df_data_atualizacao,'leitos_ocupados_sp':leitos_ocupados_sp, \
-                'vacina_covid_sp1':vacina_covid_sp1,'atualizacao':df_data_atualizacao})
+    return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil, \
+                                                 'df_data_atualizacao': df_data_atualizacao,
+                                                 'leitos_ocupados_sp': leitos_ocupados_sp, \
+                                                 'vacina_covid_sp1': vacina_covid_sp1,
+                                                 'atualizacao': df_data_atualizacao})
 
 
 def vacinas_prazos(request):
@@ -73,7 +74,7 @@ def vacinas_prazos(request):
 
     if nova_data == None:
         nova_data = datetime.today()
-    data_selecionada=nova_data
+    data_selecionada = nova_data
     ##transfoma a dataa para o formato intenacional
     vac = TbCalendarioVacina.objects.all().values()
     dados_sql = pd.DataFrame(vac)
@@ -90,7 +91,7 @@ def vacinas_prazos(request):
         # adiciona a quaantidade de mêses na data
         # data_prevista = nova_data + relativedelta(months = quantidade_mes)
         data_prevista = pd.to_datetime(nova_data) + pd.DateOffset(months=quantidade_mes)
-        data_prevista=((data_prevista - pd.DateOffset(days=1))+ pd.offsets.BusinessDay())
+        data_prevista = ((data_prevista - pd.DateOffset(days=1)) + pd.offsets.BusinessDay())
         # incrementa o contador
         conta_mes = conta_mes + 1
         listadata += [data_prevista]
@@ -112,12 +113,12 @@ def vacinas_prazos(request):
     dados_sql2 = dados_sql.sort_values(by=['meses'], ascending=True)
     dados_sql3 = pd.DataFrame(dados_sql2)
     if request.user.is_authenticated:
-        dados_sql3 = dados_sql3[['descricao_vacina', 'observacao','meses', 'dataprevista']]
+        dados_sql3 = dados_sql3[['descricao_vacina', 'observacao', 'meses', 'dataprevista']]
     else:
-       dados_sql3 = dados_sql3[['descricao_vacina', 'dataprevista']]
+        dados_sql3 = dados_sql3[['descricao_vacina', 'dataprevista']]
     dados_sql3.rename(
         columns={'descricao_vacina': 'Vacina', 'observacao': 'Observações',
-                 'dataprevista': 'A partir de','meses':'Meses'},
+                 'dataprevista': 'A partir de', 'meses': 'Meses'},
         inplace=True
     )
     dados_sql3.to_string(index=False)
@@ -127,7 +128,7 @@ def vacinas_prazos(request):
         'vacin': 'Próximas Vacinas',
         'dados_sql3': dados_sql3.to_html(classes='table table-stripped', border=1, justify='center', index=False)
     }
-    print(data_selecionada)
+
     return render(request, 'vacina/vacinas_prazos.html', context)
 
 
@@ -136,36 +137,43 @@ def encontra_ubs(request):
     l2 = "-46.633664132"
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
-    if(lat_get != None) & (lon_get != None) :
+    if (lat_get != None) & (lon_get != None):
         latitude = str(lat_get)
         longitude = str(lon_get)
         l1 = latitude
         l2 = longitude
-
     else:
         l1 = l1
         l2 = l2
-    print(l1)
-    print(l2)
-
     ubs = TbUbsDadosSp.objects.all().values()
+
     geoloc_ubs = pd.DataFrame(ubs)
     # filtra o dataset com a variavel bairroubs
     geoloc = geoloc_ubs
-    # seleciona a primeiralinha da pesquisa e utiliza a coordenada para centralizar o mapa
-    # par ulilizar vinda do navegador  substitua geoloc.iloc[0]
-    # geo_centraliza = geoloc.iloc[104]
-    # print(geo_centraliza)
-    # variaveis ppara a plotagem
-    # mplotagem do mapa
-    m = folium.Map(location=[l1, l2], zoom_start=14, control_scale=True, width=1090, height=450)
+    lista_distancia=[]
+    for _, dis in geoloc.iterrows():
+        distan = distance.distance((l1, l2), [float(dis['latitude']), dis['longitude']]).km
+        distan = float(distan)
+        distan = round(distan,1)
+        lista_distancia += [distan]
+
+    geoloc['distancia'] = lista_distancia
+    geoloc = geoloc.nsmallest(10, 'distancia')
+    geoloc['poupup']= 'DISTANCIA'+ ' '+geoloc['distancia'].map(str)+ ' '+'KM'+ \
+                      ' '+geoloc['endereçoubs']+ ','+geoloc['numeroenderecoubs']+\
+                      ' '+geoloc['bairroenderecoubs']+' '+'FONE:'+' '+geoloc['telefone1ubs']
+
+
+
+    m = folium.Map(location=[l1, l2], zoom_start=15, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
     for _, ubs in geoloc.iterrows():
+
         folium.Marker(
-            location=[ubs['latitude'], ubs['longitude']], popup=ubs['endereçoubs']
+            location=[ubs['latitude'], ubs['longitude']], popup=ubs['poupup'],
         ).add_to(m)
     folium.Marker(
-        location=[l1, l2], icon=folium.Icon(color='red', icon='home'), ).add_to(m)
+        location=[l1, l2], popup='Você esta aqui!', icon=folium.Icon(color='green', icon='ok-circle'), ).add_to(m)
     context = {
         'vacin': 'Encontre a UBS mais proxima de você.',
         'm': m._repr_html_()
