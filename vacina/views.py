@@ -4,22 +4,21 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
-from .models import Profile, TbCalendarioVacina, TbUbsDadosSp,TbUbsDadosBrasil
+from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
 from datetime import datetime
 from geopy import distance
 import pandas as pd
 import folium
 import requests
 import json
-
+import socket
 import pytz
-from django.db.models import Value
-from django.db.models.functions import Replace
+
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230221_vacinometro.csv'
-    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230221_leitos_ocupados_por_unidade_hospitalar.zip'
+    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_vacinometro.csv'
+    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_leitos_ocupados_por_unidade_hospitalar.zip'
     # casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid, sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
@@ -147,38 +146,34 @@ def encontra_ubs(request):
         l1 = l1
         l2 = l2
     ubs = TbUbsDadosSp.objects.all().values()
-    ubs_sp = TbUbsDadosBrasil.objects.all().values()
+
     geoloc_ubs = pd.DataFrame(ubs)
-    geoloc_ubs_sp = pd.DataFrame(ubs_sp)
-    geoloc_ubs_sp_rep = geoloc_ubs_sp[['nome','logradouro','bairro','latitude','longitude']]
     # filtra o dataset com a variavel bairroubs
     geoloc = geoloc_ubs
-    geoloc_brasil = geoloc_ubs_sp_rep
-
-    print(geoloc_brasil)
-    print(geoloc_ubs)
     lista_distancia=[]
     for _, dis in geoloc.iterrows():
         distan = distance.distance((l1, l2), [float(dis['latitude']), dis['longitude']]).km
         distan = float(distan)
         distan = round(distan,1)
         lista_distancia += [distan]
+
     geoloc['distancia'] = lista_distancia
     geoloc = geoloc.nsmallest(10, 'distancia')
-    geoloc['poupup']= 'DISTANCIA '+geoloc['distancia'].map(str)+ ' '+'KM'+ \
+    geoloc['poupup']= 'DISTANCIA'+ ' '+geoloc['distancia'].map(str)+ ' '+'KM'+ \
                       ' '+geoloc['endereçoubs']+ ','+geoloc['numeroenderecoubs']+\
                       ' '+geoloc['bairroenderecoubs']+' '+'FONE:'+' '+geoloc['telefone1ubs']
 
-    m = folium.Map(location=[l1, l2], zoom_start=13, control_scale=True, width=1090, height=450)
+
+
+    m = folium.Map(location=[l1, l2], zoom_start=15, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
-    folium.Marker(
-        location=[l1, l2], popup='Você esta aqui!', icon=folium.Icon(color='green', icon='pushpin'),title = "Localize a UBS mais próxima", ).add_to(m)
     for _, ubs in geoloc.iterrows():
 
         folium.Marker(
-            location=[ubs['latitude'], ubs['longitude']], popup=ubs['poupup'], icon=folium.Icon(color='red', icon='home'),
+            location=[ubs['latitude'], ubs['longitude']], popup=ubs['poupup'],
         ).add_to(m)
-
+    folium.Marker(
+        location=[l1, l2], popup='Você esta aqui!', icon=folium.Icon(color='green', icon='ok-circle'), ).add_to(m)
     context = {
         'vacin': 'Encontre a UBS mais proxima de você.',
         'm': m._repr_html_()
