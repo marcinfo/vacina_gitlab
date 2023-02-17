@@ -165,7 +165,7 @@ def encontra_ubs(request):
 
 
 
-    m = folium.Map(location=[l1, l2], zoom_start=15, control_scale=True, width=1090, height=450)
+    m = folium.Map(location=[l1, l2], zoom_start=13, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
     for _, ubs in geoloc.iterrows():
 
