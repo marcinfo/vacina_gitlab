@@ -11,14 +11,14 @@ import pandas as pd
 import folium
 import requests
 import json
-import socket
+
 import pytz
 
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230217_vacinometro.csv'
-    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230217_leitos_ocupados_por_unidade_hospitalar.zip'
+    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230218_vacinometro.csv'
+    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230218_leitos_ocupados_por_unidade_hospitalar.zip'
     # casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid, sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
@@ -38,7 +38,7 @@ def index(request):
                  'ADICIONAL': 'adicional', 'Grand Total': 'total'},
         inplace=True
     )
-    vacina_covid_sp1 = vacina_covid_sp[['UNICA', 'dose1', 'dose2', 'adicional']]
+
 
     vacina_covid_sp1 = vacina_covid_sp.sum()
 
@@ -83,13 +83,13 @@ def vacinas_prazos(request):
     conta_mes = 0
     # lista vazia que vai receber os valores de (data + meses)
     listadata = []
-    diasfalta = []
+
     # percorre todas as linhas da tabela
     for (row, rs) in dados_sql.iterrows():
         # recebe a quntidade de mes e coloca na quantidade_mes
         quantidade_mes = int(dados_sql['meses'].values[conta_mes])
         # adiciona a quaantidade de mêses na data
-        # data_prevista = nova_data + relativedelta(months = quantidade_mes)
+
         data_prevista = pd.to_datetime(nova_data) + pd.DateOffset(months=quantidade_mes)
         data_prevista = ((data_prevista - pd.DateOffset(days=1)) + pd.offsets.BusinessDay())
         # incrementa o contador
@@ -192,7 +192,7 @@ def minhas_vacinas(request):
     conta_mes = 0
     # lista vazia que vai receber os valores de (data + meses)
     listadata = []
-    diasfalta = []
+
     # percorre todas as linhas da tabela
     for (row, rs) in dados_sql.iterrows():
         # recebe a quntidade de mes e coloca na quantidade_mes
@@ -209,7 +209,7 @@ def minhas_vacinas(request):
     dados_sql['dataprevista'] = listadata
     dados_sql.to_string(index=False)
     # transforma data para o formato brasileiro
-    # dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today())]
+
     dados_sql['dataprevista'] = pd.to_datetime(dados_sql['dataprevista'])
     dados_sql['dataprevista'] = dados_sql['dataprevista'].dt.strftime('%d/%m/%Y')
     dados_sql2 = dados_sql.sort_values(by=['meses'], ascending=True)
