@@ -154,13 +154,10 @@ def encontra_ubs(request):
 
     geoloc_ubs_sp_rep = geoloc_ubs_sp[['nome','logradouro','bairro',str('latitude'),str('longitude')]]
 
-    # filtra o dataset com a variavel bairroubs
-    geoloc = geoloc_ubs
+     geoloc = geoloc_ubs
     geoloc_brasil = geoloc_ubs_sp_rep
     geoloc_brasil['latitude2'] = geoloc_brasil['latitude'].str.replace(',', '.')
     geoloc_brasil['longitude2'] = geoloc_brasil['longitude'].str.replace(',', '.')
-
-
     print(geoloc_brasil.info())
     lista_distancia=[]
     for _, dis in geoloc.iterrows():
