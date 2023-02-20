@@ -155,7 +155,6 @@ def encontra_ubs(request):
     geoloc = geoloc_ubs
     geoloc_brasil = geoloc_ubs_sp_rep
 
-
     print(geoloc_brasil)
     lista_distancia=[]
     for _, dis in geoloc.iterrows():
@@ -163,7 +162,6 @@ def encontra_ubs(request):
         distan = float(distan)
         distan = round(distan,1)
         lista_distancia += [distan]
-
     geoloc['distancia'] = lista_distancia
     geoloc = geoloc.nsmallest(10, 'distancia')
     geoloc['poupup']= 'DISTANCIA'+ ' '+geoloc['distancia'].map(str)+ ' '+'KM'+ \
