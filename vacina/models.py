@@ -82,8 +82,9 @@ class TbUbsDadosBrasil(models.Model):
     nome = models.TextField(db_column='NOME', blank=True, null=True)  # Field name made lowercase.
     logradouro = models.TextField(db_column='LOGRADOURO', blank=True, null=True)  # Field name made lowercase.
     bairro = models.TextField(db_column='BAIRRO', blank=True, null=True)  # Field name made lowercase.
-    latitude = models.TextField(db_column='LATITUDE', blank=True, null=True)  # Field name made lowercase.
-    longitude = models.TextField(db_column='LONGITUDE', blank=True, null=True)  # Field name made lowercase.
+    latitude = models.FloatField(db_column='LATITUDE', blank=True, null=True)  # Field name made lowercase.
+    longitude = models.FloatField(db_column='LONGITUDE', blank=True, null=True)  # Field name made lowercase.
+    idubsbrasil = models.AutoField(primary_key=True)
 
     class Meta:
         managed = False

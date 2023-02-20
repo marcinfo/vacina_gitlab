@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
-from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
+from .models import Profile, TbCalendarioVacina, TbUbsDadosSp,TbUbsDadosBrasil
 from datetime import datetime
 from geopy import distance
 import pandas as pd
@@ -146,10 +146,22 @@ def encontra_ubs(request):
         l1 = l1
         l2 = l2
     ubs = TbUbsDadosSp.objects.all().values()
+    ubs_sp = TbUbsDadosBrasil.objects.all().values()
+    teste =TbUbsDadosBrasil.objects.raw('UPDATE tb_ubs_dados_brasil SET latitude = REPLACE(string_field, ",", "."')
 
     geoloc_ubs = pd.DataFrame(ubs)
+    geoloc_ubs_sp = pd.DataFrame(ubs_sp)
+
+    geoloc_ubs_sp_rep = geoloc_ubs_sp[['nome','logradouro','bairro',str('latitude'),str('longitude')]]
+
     # filtra o dataset com a variavel bairroubs
     geoloc = geoloc_ubs
+    geoloc_brasil = geoloc_ubs_sp_rep
+    geoloc_brasil['latitude2'] = geoloc_brasil['latitude'].str.replace(',', '.')
+    geoloc_brasil['longitude2'] = geoloc_brasil['longitude'].str.replace(',', '.')
+
+
+    print(geoloc_brasil.info())
     lista_distancia=[]
     for _, dis in geoloc.iterrows():
         distan = distance.distance((l1, l2), [float(dis['latitude']), dis['longitude']]).km
