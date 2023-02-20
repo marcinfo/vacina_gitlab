@@ -11,9 +11,10 @@ import pandas as pd
 import folium
 import requests
 import json
-import socket
-import pytz
 
+import pytz
+from django.db.models import Value
+from django.db.models.functions import Replace
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
@@ -147,18 +148,15 @@ def encontra_ubs(request):
         l2 = l2
     ubs = TbUbsDadosSp.objects.all().values()
     ubs_sp = TbUbsDadosBrasil.objects.all().values()
-    teste =TbUbsDadosBrasil.objects.raw('UPDATE tb_ubs_dados_brasil SET latitude = REPLACE(string_field, ",", "."')
-
     geoloc_ubs = pd.DataFrame(ubs)
     geoloc_ubs_sp = pd.DataFrame(ubs_sp)
-
-    geoloc_ubs_sp_rep = geoloc_ubs_sp[['nome','logradouro','bairro',str('latitude'),str('longitude')]]
-
-     geoloc = geoloc_ubs
+    geoloc_ubs_sp_rep = geoloc_ubs_sp[['nome','logradouro','bairro','latitude','longitude']]
+    # filtra o dataset com a variavel bairroubs
+    geoloc = geoloc_ubs
     geoloc_brasil = geoloc_ubs_sp_rep
-    geoloc_brasil['latitude2'] = geoloc_brasil['latitude'].str.replace(',', '.')
-    geoloc_brasil['longitude2'] = geoloc_brasil['longitude'].str.replace(',', '.')
-    print(geoloc_brasil.info())
+
+
+    print(geoloc_brasil)
     lista_distancia=[]
     for _, dis in geoloc.iterrows():
         distan = distance.distance((l1, l2), [float(dis['latitude']), dis['longitude']]).km
