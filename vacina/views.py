@@ -17,8 +17,8 @@ import pytz
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230223_vacinometro.csv'
-    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230223_leitos_ocupados_por_unidade_hospitalar.zip'
+    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230217_vacinometro.csv'
+    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230217_leitos_ocupados_por_unidade_hospitalar.zip'
     # casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid, sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
@@ -133,8 +133,12 @@ def vacinas_prazos(request):
 
 
 def encontra_ubs(request):
-    l1 = "-23.550164466"
-    l2 = "-46.633664132"
+    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv&ufs=35'
+    usb_sp = pd.read_csv(url,sep=";")
+    usb_sp2=usb_sp.dropna(axis=0)
+
+    l1 = "-23.60269980"
+    l2 = "-46.79287610"
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
     if (lat_get != None) & (lon_get != None):
@@ -148,29 +152,32 @@ def encontra_ubs(request):
     ubs = TbUbsDadosSp.objects.all().values()
 
     geoloc_ubs = pd.DataFrame(ubs)
+    geoloc_ubs_sp=pd.DataFrame(usb_sp2)
+    print(geoloc_ubs_sp)
     # filtra o dataset com a variavel bairroubs
     geoloc = geoloc_ubs
     lista_distancia=[]
-    for _, dis in geoloc.iterrows():
-        distan = distance.distance((l1, l2), [float(dis['latitude']), dis['longitude']]).km
+    for _, dis in geoloc_ubs_sp.iterrows():
+        distan = distance.distance((l1, l2), [float(dis['lat']), dis['long']]).km
         distan = float(distan)
         distan = round(distan,1)
         lista_distancia += [distan]
 
-    geoloc['distancia'] = lista_distancia
-    geoloc = geoloc.nsmallest(10, 'distancia')
-    geoloc['poupup']= 'DISTANCIA'+ ' '+geoloc['distancia'].map(str)+ ' '+'KM'+ \
-                      ' '+geoloc['endereçoubs']+ ','+geoloc['numeroenderecoubs']+\
-                      ' '+geoloc['bairroenderecoubs']+' '+'FONE:'+' '+geoloc['telefone1ubs']
 
+    geoloc_ubs_sp['distancia'] = lista_distancia
+    geoloc_ubs_sp = geoloc_ubs_sp[['cidade','no_logradouro','no_bairro','lat','long','distancia']]
+    geoloc_ubs_sp = geoloc_ubs_sp.nsmallest(10, 'distancia')
+    geoloc_ubs_sp['poupup']= 'DISTANCIA '+geoloc_ubs_sp['distancia'].map(str)+' ' +\
+                             geoloc_ubs_sp['no_logradouro']+' '+geoloc_ubs_sp['no_bairro']
+    print(geoloc_ubs_sp)
 
 
     m = folium.Map(location=[l1, l2], zoom_start=13, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
-    for _, ubs in geoloc.iterrows():
+    for _, ubs in geoloc_ubs_sp.iterrows():
 
         folium.Marker(
-            location=[ubs['latitude'], ubs['longitude']], popup=ubs['poupup'],
+            location=[ubs['lat'], ubs['long']], popup=ubs['poupup'],
         ).add_to(m)
     folium.Marker(
         location=[l1, l2], popup='Você esta aqui!', icon=folium.Icon(color='green', icon='ok-circle'), ).add_to(m)
