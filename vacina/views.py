@@ -133,7 +133,7 @@ def vacinas_prazos(request):
 
 
 def encontra_ubs(request):
-    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv'
+    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv&ufcidade=SP&codPainel=&ufs=35'
     usb_sp = pd.read_csv(url,sep=";")
     usb_sp2=usb_sp.dropna(axis=0)
 
