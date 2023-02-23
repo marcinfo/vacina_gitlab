@@ -17,8 +17,8 @@ import pytz
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_vacinometro.csv'
-    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230216_leitos_ocupados_por_unidade_hospitalar.zip'
+    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230223_vacinometro.csv'
+    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230223_leitos_ocupados_por_unidade_hospitalar.zip'
     # casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid, sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
@@ -165,7 +165,7 @@ def encontra_ubs(request):
 
 
 
-    m = folium.Map(location=[l1, l2], zoom_start=15, control_scale=True, width=1090, height=450)
+    m = folium.Map(location=[l1, l2], zoom_start=13, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
     for _, ubs in geoloc.iterrows():
 
