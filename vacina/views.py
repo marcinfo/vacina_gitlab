@@ -133,12 +133,12 @@ def vacinas_prazos(request):
 
 
 def encontra_ubs(request):
-    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv&ufs=35'
+    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv'
     usb_sp = pd.read_csv(url,sep=";")
     usb_sp2=usb_sp.dropna(axis=0)
 
-    l1 = "-23.60269980"
-    l2 = "-46.79287610"
+    l1 = "-8.73516"
+    l2 = "-36.6271"
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
     if (lat_get != None) & (lon_get != None):
