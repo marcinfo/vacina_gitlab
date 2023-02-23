@@ -137,8 +137,8 @@ def encontra_ubs(request):
     usb_sp = pd.read_csv(url,sep=";")
     usb_sp2=usb_sp.dropna(axis=0)
 
-    l1 = "-8.73516"
-    l2 = "-36.6271"
+    l1 = "-23.60269980"
+    l2 = "-46.79287610"
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
     if (lat_get != None) & (lon_get != None):
