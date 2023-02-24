@@ -130,16 +130,12 @@ def vacinas_prazos(request):
     }
 
     return render(request, 'vacina/vacinas_prazos.html', context)
-
-
 def encontra_ubs(request):
     url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv&ufcidade=SP&codPainel=&ufs=35'
     usb_sp = pd.read_csv(url,sep=";")
     usb_sp2=usb_sp.dropna(axis=0)
-
     l1 = "-23.55028"
     l2 = "-46.63389"
-
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
     ubs = TbUbsDadosSp.objects.all().values()
@@ -158,15 +154,11 @@ def encontra_ubs(request):
         estado= address.get('ISO3166-2-lvl4')[3:5]
         geoloc_ubs_sp = geoloc_ubs_sp.loc[(geoloc_ubs_sp["uf"] == estado) & (geoloc_ubs_sp["cidade"] == cidade)]
 
-        print(estado)
-        print(cidade)
-
-
     else:
 
         l1 = l1
         l2 = l2
-    # filtra o dataset com a variavel bairroubs
+
         geoloc = geoloc_ubs
     lista_distancia=[]
     for _, dis in geoloc_ubs_sp.iterrows():
@@ -181,8 +173,6 @@ def encontra_ubs(request):
     geoloc_ubs_sp = geoloc_ubs_sp.nsmallest(10, 'distancia')
     geoloc_ubs_sp['poupup']= 'DISTANCIA '+geoloc_ubs_sp['distancia'].map(str)+' ' +\
                              geoloc_ubs_sp['no_logradouro']+' '+geoloc_ubs_sp['no_bairro']
-
-
 
     m = folium.Map(location=[l1, l2], zoom_start=13, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
