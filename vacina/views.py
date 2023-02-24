@@ -11,7 +11,7 @@ import pandas as pd
 import folium
 import requests
 import json
-import socket
+from geopy.geocoders import Nominatim
 import pytz
 
 
@@ -137,25 +137,37 @@ def encontra_ubs(request):
     usb_sp = pd.read_csv(url,sep=";")
     usb_sp2=usb_sp.dropna(axis=0)
 
-    l1 = "-23.60269980"
-    l2 = "-46.79287610"
+    l1 = "-23.55028"
+    l2 = "-46.63389"
+
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
+    ubs = TbUbsDadosSp.objects.all().values()
+    geoloc_ubs = pd.DataFrame(ubs)
+    geoloc_ubs_sp=pd.DataFrame(usb_sp2)
+
     if (lat_get != None) & (lon_get != None):
         latitude = str(lat_get)
         longitude = str(lon_get)
         l1 = latitude
         l2 = longitude
+        geolocator = Nominatim(user_agent="geoapiExercises")
+        location = geolocator.reverse(l1 + "," + l2)
+        address = location.raw['address']
+        cidade = address.get('city')
+        estado= address.get('ISO3166-2-lvl4')[3:5]
+        geoloc_ubs_sp = geoloc_ubs_sp.loc[(geoloc_ubs_sp["uf"] == estado) & (geoloc_ubs_sp["cidade"] == cidade)]
+
+        print(estado)
+        print(cidade)
+
+
     else:
+
         l1 = l1
         l2 = l2
-    ubs = TbUbsDadosSp.objects.all().values()
-
-    geoloc_ubs = pd.DataFrame(ubs)
-    geoloc_ubs_sp=pd.DataFrame(usb_sp2)
-    print(geoloc_ubs_sp)
     # filtra o dataset com a variavel bairroubs
-    geoloc = geoloc_ubs
+        geoloc = geoloc_ubs
     lista_distancia=[]
     for _, dis in geoloc_ubs_sp.iterrows():
         distan = distance.distance((l1, l2), [float(dis['lat']), dis['long']]).km
@@ -169,7 +181,7 @@ def encontra_ubs(request):
     geoloc_ubs_sp = geoloc_ubs_sp.nsmallest(10, 'distancia')
     geoloc_ubs_sp['poupup']= 'DISTANCIA '+geoloc_ubs_sp['distancia'].map(str)+' ' +\
                              geoloc_ubs_sp['no_logradouro']+' '+geoloc_ubs_sp['no_bairro']
-    print(geoloc_ubs_sp)
+
 
 
     m = folium.Map(location=[l1, l2], zoom_start=13, control_scale=True, width=1090, height=450)
