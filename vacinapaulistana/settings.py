@@ -148,5 +148,5 @@ EMAIL_PORT = '587'
 EMAIL_USER_TSL = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_PASSWORD = ''
-DEFAULT_FROM_EMAIL = 'rpixwmpzrjcwhpwf'
+DEFAULT_FROM_EMAIL = 'rpixasdasdadadadadadadadadadffewwcwhpwf'
 """
