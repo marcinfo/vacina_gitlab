@@ -131,7 +131,7 @@ def vacinas_prazos(request):
 
     return render(request, 'vacina/vacinas_prazos.html', context)
 def encontra_ubs(request):
-    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv&ufcidade=SP&codPainel=&ufs=35'
+    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv'
     usb_sp = pd.read_csv(url,sep=";")
     usb_sp2=usb_sp.dropna(axis=0)
     l1 = "-23.55028"
@@ -141,7 +141,7 @@ def encontra_ubs(request):
     ubs = TbUbsDadosSp.objects.all().values()
     geoloc_ubs = pd.DataFrame(ubs)
     geoloc_ubs_sp=pd.DataFrame(usb_sp2)
-
+    lista_distancia = []
     if (lat_get != None) & (lon_get != None):
         latitude = str(lat_get)
         longitude = str(lon_get)
@@ -153,31 +153,20 @@ def encontra_ubs(request):
         cidade = address.get('city')
         estado= address.get('ISO3166-2-lvl4')[3:5]
         geoloc_ubs_sp = geoloc_ubs_sp.loc[(geoloc_ubs_sp["uf"] == estado) & (geoloc_ubs_sp["cidade"] == cidade)]
-
-    else:
-
-        l1 = l1
-        l2 = l2
-
-        geoloc = geoloc_ubs
-    lista_distancia=[]
     for _, dis in geoloc_ubs_sp.iterrows():
         distan = distance.distance((l1, l2), [float(dis['lat']), dis['long']]).km
         distan = float(distan)
         distan = round(distan,1)
         lista_distancia += [distan]
 
-
     geoloc_ubs_sp['distancia'] = lista_distancia
     geoloc_ubs_sp = geoloc_ubs_sp[['cidade','no_logradouro','no_bairro','lat','long','distancia']]
     geoloc_ubs_sp = geoloc_ubs_sp.nsmallest(10, 'distancia')
     geoloc_ubs_sp['poupup']= 'DISTANCIA '+geoloc_ubs_sp['distancia'].map(str)+' ' +\
                              geoloc_ubs_sp['no_logradouro']+' '+geoloc_ubs_sp['no_bairro']
-
     m = folium.Map(location=[l1, l2], zoom_start=13, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
     for _, ubs in geoloc_ubs_sp.iterrows():
-
         folium.Marker(
             location=[ubs['lat'], ubs['long']], popup=ubs['poupup'],
         ).add_to(m)
@@ -188,7 +177,13 @@ def encontra_ubs(request):
         'm': m._repr_html_()
     }
 
+
     return render(request, 'vacina/encontra_ubs.html', context)
+
+
+
+
+
 
 
 def minhas_vacinas(request):
