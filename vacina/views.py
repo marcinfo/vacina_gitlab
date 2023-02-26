@@ -20,8 +20,8 @@ from geopy.geocoders import Nominatim
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230217_vacinometro.csv'
-    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230217_leitos_ocupados_por_unidade_hospitalar.zip'
+    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230226_vacinometro.csv'
+    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230226_leitos_ocupados_por_unidade_hospitalar.zip'
     # casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid, sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
@@ -137,7 +137,6 @@ def encontra_ubs(request):
     url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv&ufs=35'
     usb_sp = pd.read_csv(url,sep=";")
     usb_sp2=usb_sp.dropna(axis=0)
-
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
     #geoloc_ubs = pd.DataFrame(ubs)
@@ -148,25 +147,18 @@ def encontra_ubs(request):
     print(param)
     zoom_inicial=parametro.query('parametro=="zoom_inicial"')
     zoom_inicial=float(zoom_inicial['valor'])
-
     zoom_localizacao=parametro.query('parametro=="zoom_localizacao"')
     zoom_localizacao = float(zoom_localizacao['valor'])
     qtd_ubs_inicial=parametro.query('parametro=="qtd_ubs_inicial"')
     qtd_ubs_inicial = int(qtd_ubs_inicial['valor'])
-
     qtd_ubs_localizacao=parametro.query('parametro=="qtd_ubs_localizacao"')
     qtd_ubs_localizacao = int(qtd_ubs_localizacao['valor'])
-
     centralizar_mapa =parametro.query('parametro=="centralizar_mapa"')
     centraliza_latitude = float(centralizar_mapa['centraliza_latitude'])
-
     centralizar_mapa =parametro.query('parametro=="centralizar_mapa"')
     centraliza_longitude = float(centralizar_mapa['centraliza_longitude'])
-
-    print(centraliza_latitude)
     l1 = centraliza_latitude
     l2 = centraliza_longitude
-
     zoom = zoom_inicial
     quantidade = qtd_ubs_inicial
     if (lat_get != None) & (lon_get != None):
@@ -186,12 +178,9 @@ def encontra_ubs(request):
         cidade = address.get('city')
         estado= address.get('ISO3166-2-lvl4')[3:5]
         geoloc_ubs_sp = geoloc_ubs_sp.loc[(geoloc_ubs_sp["uf"] == estado) & (geoloc_ubs_sp["cidade"] == cidade)]
-
     else:
-
         l1 = l1
         l2 = l2
-
         #geoloc = geoloc_ubs
     lista_distancia=[]
     for _, dis in geoloc_ubs_sp.iterrows():
@@ -199,18 +188,14 @@ def encontra_ubs(request):
         distan = float(distan)
         distan = round(distan,1)
         lista_distancia += [distan]
-
-
     geoloc_ubs_sp['distancia'] = lista_distancia
     geoloc_ubs_sp = geoloc_ubs_sp[['cidade','no_logradouro','no_bairro','lat','long','distancia']]
     geoloc_ubs_sp = geoloc_ubs_sp.nsmallest(quantidade, 'distancia')
     geoloc_ubs_sp['poupup']= 'DISTANCIA '+geoloc_ubs_sp['distancia'].map(str)+' km ' +\
                              geoloc_ubs_sp['no_logradouro']+' '+geoloc_ubs_sp['no_bairro']
-
     m = folium.Map(location=[l1, l2], zoom_start=zoom, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
     for _, ubs in geoloc_ubs_sp.iterrows():
-
         folium.Marker(
             location=[ubs['lat'], ubs['long']], popup=ubs['poupup'],
         ).add_to(m)
@@ -220,10 +205,7 @@ def encontra_ubs(request):
         'vacin': 'Encontre a UBS mais proxima de você.',
         'm': m._repr_html_()
     }
-
     return render(request, 'vacina/encontra_ubs.html', context)
-
-
 def minhas_vacinas(request):
     nascimento = request.user.profile.date_of_birth
     ##transfoma a dataa para o formato intenacional
@@ -267,16 +249,10 @@ def minhas_vacinas(request):
         'dados_sql3': dados_sql3.to_html(classes='table table-stripped', border=1, justify='center', index=False)
     }
     return render(request, 'vacina/minhas_vacinas.html', context)
-
-
 def links(request):
     return render(request, 'vacina/links.html')
-
-
 def api(request):
     return render(request, 'vacina/api.html')
-
-
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -297,8 +273,6 @@ def user_login(request):
     else:
         form = LoginForm()
     return render(request, 'vacina/login.html', {'form': form})
-
-
 def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
@@ -320,13 +294,9 @@ def register(request):
     return render(request,
                   'vacina/register.html',
                   {'user_form': user_form})
-
-
 @login_required
 def dashboard(request):
     return render(request, 'vacina/dashboard.html', {'section': 'dashboard'})
-
-
 @login_required
 def edit(request):
     if request.method == 'POST':
