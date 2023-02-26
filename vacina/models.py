@@ -115,3 +115,16 @@ class TbUbsDadosSp(models.Model):
         db_table = 'tb_ubs_dados_sp'
         verbose_name = "Tabela de UBS"
         verbose_name_plural = "Cadastro de UBS"
+
+class TbParametros(models.Model):
+    id_parametro = models.AutoField(primary_key=True)
+    parametro = models.CharField(unique=True,max_length=50,verbose_name='Parametro de configuração')
+    valor = models.IntegerField(verbose_name='Valor do Parametro')
+    centraliza_latitude = models.FloatField(default=-23.55028,blank=True, null=True)
+    centraliza_longitude = models.FloatField(default=-46.63389,max_length=45, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'tb_parametros'
+        verbose_name = "Tabela de Parametros"
+        verbose_name_plural = "Cadastro de Parametros"

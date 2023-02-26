@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile,TbUbsDadosSp,TbCalendarioVacina,TbMunicipios
+from .models import Profile,TbUbsDadosSp,TbCalendarioVacina,TbMunicipios,TbParametros
 
 
 @admin.register(Profile)
@@ -18,6 +18,14 @@ class TbMunicipios(admin.ModelAdmin):
     list_display = ['uf','município','região','população_2010']
     search_fields =('município',)
     ordering = ['uf', 'município', ]
+
+
+@admin.register(TbParametros)
+class TbParametrosAdmin(admin.ModelAdmin):
+    list_display = ['parametro','valor','centraliza_latitude','centraliza_longitude']
+    search_fields =('parametro',)
+    ordering = ['parametro' ]
+
 
 @admin.register(TbUbsDadosSp)
 class TbUbsDadosSp(admin.ModelAdmin):

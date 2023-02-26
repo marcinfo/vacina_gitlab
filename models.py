@@ -166,6 +166,44 @@ class TbMunicipios(models.Model):
         db_table = 'tb_municipios'
 
 
+class TbParametros(models.Model):
+    id_parametro = models.AutoField(primary_key=True)
+    parametro = models.CharField(max_length=45)
+    valor = models.IntegerField()
+    centraliza_latitude = models.FloatField(default=-23.55028,blank=True, null=True)
+    centraliza_longitude = models.FloatField(default=-46.63389,max_length=45, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'tb_parametros'
+
+
+class TbUbsBrasil(models.Model):
+    cnes = models.TextField(db_column='CNES')  # Field name made lowercase.
+    uf = models.IntegerField(db_column='UF', blank=True, null=True)  # Field name made lowercase.
+    ibge = models.IntegerField(db_column='IBGE', blank=True, null=True)  # Field name made lowercase.
+    nome = models.TextField(db_column='NOME', blank=True, null=True)  # Field name made lowercase.
+    logradouro = models.TextField(db_column='LOGRADOURO', blank=True, null=True)  # Field name made lowercase.
+    bairro = models.TextField(db_column='BAIRRO', blank=True, null=True)  # Field name made lowercase.
+    latitude = models.TextField(blank=True, null=True)
+    longitude = models.TextField(blank=True, null=True)
+    idubsbrasil = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'tb_ubs_brasil'
+
+
+class TbUbsDadosBrasil(models.Model):
+    cnes = models.TextField(db_column='CNES')  # Field name made lowercase.
+    uf = models.IntegerField(db_column='UF', blank=True, null=True)  # Field name made lowercase.
+    ibge = models.IntegerField(db_column='IBGE', blank=True, null=True)  # Field name made lowercase.
+    nome = models.TextField(db_column='NOME', blank=True, null=True)  # Field name made lowercase.
+    logradouro = models.TextField(db_column='LOGRADOURO', blank=True, null=True)  # Field name made lowercase.
+    bairro = models.TextField(db_column='BAIRRO', blank=True, null=True)  # Field name made lowercase.
+    latitude = models.TextField(blank=True, null=True)
+    longitude = models.TextField(blank=True, null=True)
+    idubsbrasil = models.AutoField(primary_key=True)
 
     class Meta:
         managed = False
@@ -204,18 +242,3 @@ class VacinaProfile(models.Model):
     class Meta:
         managed = False
         db_table = 'vacina_profile'
-
-
-class TbUbsDadosBrasil(models.Model):
-    cnes = models.TextField(db_column='CNES')  # Field name made lowercase.
-    uf = models.IntegerField(db_column='UF', blank=True, null=True)  # Field name made lowercase.
-    ibge = models.IntegerField(db_column='IBGE', blank=True, null=True)  # Field name made lowercase.
-    nome = models.TextField(db_column='NOME', blank=True, null=True)  # Field name made lowercase.
-    logradouro = models.TextField(db_column='LOGRADOURO', blank=True, null=True)  # Field name made lowercase.
-    bairro = models.TextField(db_column='BAIRRO', blank=True, null=True)  # Field name made lowercase.
-    latitude = models.TextField(db_column='LATITUDE', blank=True, null=True)  # Field name made lowercase.
-    longitude = models.TextField(db_column='LONGITUDE', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'tb_ubs_dados_brasil'

@@ -1,18 +1,21 @@
+import pandas as pd
+import folium
+import pytz
+import requests
+import json
+from folium.plugins import MarkerCluster
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
-from .models import Profile, TbCalendarioVacina, TbUbsDadosSp
+from .models import Profile, TbCalendarioVacina, TbUbsDadosSp,TbParametros
 from datetime import datetime
 from geopy import distance
-import pandas as pd
-import folium
-import requests
-import json
+
 from geopy.geocoders import Nominatim
-import pytz
+
 
 
 def index(request):
@@ -131,42 +134,83 @@ def vacinas_prazos(request):
 
     return render(request, 'vacina/vacinas_prazos.html', context)
 def encontra_ubs(request):
-    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv'
+    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv&ufs=35'
     usb_sp = pd.read_csv(url,sep=";")
     usb_sp2=usb_sp.dropna(axis=0)
-    l1 = "-23.55028"
-    l2 = "-46.63389"
+
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
-    ubs = TbUbsDadosSp.objects.all().values()
-    geoloc_ubs = pd.DataFrame(ubs)
+    #geoloc_ubs = pd.DataFrame(ubs)
     geoloc_ubs_sp=pd.DataFrame(usb_sp2)
-    lista_distancia = []
+    param=TbParametros.objects.all().values()
+    param=pd.DataFrame(param)
+    parametro=param.groupby('parametro').sum().reset_index()
+    print(param)
+    zoom_inicial=parametro.query('parametro=="zoom_inicial"')
+    zoom_inicial=float(zoom_inicial['valor'])
+
+    zoom_localizacao=parametro.query('parametro=="zoom_localizacao"')
+    zoom_localizacao = float(zoom_localizacao['valor'])
+    qtd_ubs_inicial=parametro.query('parametro=="qtd_ubs_inicial"')
+    qtd_ubs_inicial = int(qtd_ubs_inicial['valor'])
+
+    qtd_ubs_localizacao=parametro.query('parametro=="qtd_ubs_localizacao"')
+    qtd_ubs_localizacao = int(qtd_ubs_localizacao['valor'])
+
+    centralizar_mapa =parametro.query('parametro=="centralizar_mapa"')
+    centraliza_latitude = float(centralizar_mapa['centraliza_latitude'])
+
+    centralizar_mapa =parametro.query('parametro=="centralizar_mapa"')
+    centraliza_longitude = float(centralizar_mapa['centraliza_longitude'])
+
+    print(centraliza_latitude)
+    l1 = centraliza_latitude
+    l2 = centraliza_longitude
+
+    zoom = zoom_inicial
+    quantidade = qtd_ubs_inicial
     if (lat_get != None) & (lon_get != None):
+        url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv'
+        usb_sp = pd.read_csv(url, sep=";")
+        usb_sp2 = usb_sp.dropna(axis=0)
+        geoloc_ubs_sp = pd.DataFrame(usb_sp2)
         latitude = str(lat_get)
         longitude = str(lon_get)
         l1 = latitude
         l2 = longitude
+        zoom = zoom_localizacao
+        quantidade = qtd_ubs_localizacao
         geolocator = Nominatim(user_agent="geoapiExercises")
         location = geolocator.reverse(l1 + "," + l2)
         address = location.raw['address']
         cidade = address.get('city')
         estado= address.get('ISO3166-2-lvl4')[3:5]
         geoloc_ubs_sp = geoloc_ubs_sp.loc[(geoloc_ubs_sp["uf"] == estado) & (geoloc_ubs_sp["cidade"] == cidade)]
+
+    else:
+
+        l1 = l1
+        l2 = l2
+
+        #geoloc = geoloc_ubs
+    lista_distancia=[]
     for _, dis in geoloc_ubs_sp.iterrows():
         distan = distance.distance((l1, l2), [float(dis['lat']), dis['long']]).km
         distan = float(distan)
         distan = round(distan,1)
         lista_distancia += [distan]
 
+
     geoloc_ubs_sp['distancia'] = lista_distancia
     geoloc_ubs_sp = geoloc_ubs_sp[['cidade','no_logradouro','no_bairro','lat','long','distancia']]
-    geoloc_ubs_sp = geoloc_ubs_sp.nsmallest(10, 'distancia')
-    geoloc_ubs_sp['poupup']= 'DISTANCIA '+geoloc_ubs_sp['distancia'].map(str)+' ' +\
+    geoloc_ubs_sp = geoloc_ubs_sp.nsmallest(quantidade, 'distancia')
+    geoloc_ubs_sp['poupup']= 'DISTANCIA '+geoloc_ubs_sp['distancia'].map(str)+' km ' +\
                              geoloc_ubs_sp['no_logradouro']+' '+geoloc_ubs_sp['no_bairro']
-    m = folium.Map(location=[l1, l2], zoom_start=13, control_scale=True, width=1090, height=450)
+
+    m = folium.Map(location=[l1, l2], zoom_start=zoom, control_scale=True, width=1090, height=450)
     folium.Marker(location=[float(l1), float(l2)]).add_to(m)
     for _, ubs in geoloc_ubs_sp.iterrows():
+
         folium.Marker(
             location=[ubs['lat'], ubs['long']], popup=ubs['poupup'],
         ).add_to(m)
@@ -177,13 +221,7 @@ def encontra_ubs(request):
         'm': m._repr_html_()
     }
 
-
     return render(request, 'vacina/encontra_ubs.html', context)
-
-
-
-
-
 
 
 def minhas_vacinas(request):
