@@ -134,35 +134,27 @@ def vacinas_prazos(request):
 
     return render(request, 'vacina/vacinas_prazos.html', context)
 def encontra_ubs(request):
-    url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv&ufs=35'
-    usb_sp = pd.read_csv(url,sep=";")
-    usb_sp2=usb_sp.dropna(axis=0)
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
-    #geoloc_ubs = pd.DataFrame(ubs)
-    geoloc_ubs_sp=pd.DataFrame(usb_sp2)
-    param=TbParametros.objects.all().values()
-    param=pd.DataFrame(param)
-    parametro=param.groupby('parametro').sum().reset_index()
-    print(param)
-    zoom_inicial=parametro.query('parametro=="zoom_inicial"')
-    zoom_inicial=float(zoom_inicial['valor'])
-    zoom_localizacao=parametro.query('parametro=="zoom_localizacao"')
-    zoom_localizacao = float(zoom_localizacao['valor'])
-    qtd_ubs_inicial=parametro.query('parametro=="qtd_ubs_inicial"')
-    qtd_ubs_inicial = int(qtd_ubs_inicial['valor'])
-    qtd_ubs_localizacao=parametro.query('parametro=="qtd_ubs_localizacao"')
-    qtd_ubs_localizacao = int(qtd_ubs_localizacao['valor'])
-    centralizar_mapa =parametro.query('parametro=="centralizar_mapa"')
-    centraliza_latitude = float(centralizar_mapa['centraliza_latitude'])
-    centralizar_mapa =parametro.query('parametro=="centralizar_mapa"')
-    centraliza_longitude = float(centralizar_mapa['centraliza_longitude'])
-    l1 = centraliza_latitude
-    l2 = centraliza_longitude
-    zoom = zoom_inicial
-    quantidade = qtd_ubs_inicial
-    if (lat_get != None) & (lon_get != None):
+    status = 'Iniciando o Processamento, Aguarde!'
+
+    if (lat_get == None) & (lon_get == None):
+        return render(request, 'vacina/encontra_ubs.html')
+        #geoloc = geoloc_ubs
+    else:
         url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv'
+
+
+
+        param = TbParametros.objects.all().values()
+        param = pd.DataFrame(param)
+        parametro = param.groupby('parametro').sum().reset_index()
+
+        zoom_localizacao = parametro.query('parametro=="zoom_localizacao"')
+        zoom_localizacao = float(zoom_localizacao['valor'])
+
+        qtd_ubs_localizacao = parametro.query('parametro=="qtd_ubs_localizacao"')
+        qtd_ubs_localizacao = int(qtd_ubs_localizacao['valor'])
         usb_sp = pd.read_csv(url, sep=";")
         usb_sp2 = usb_sp.dropna(axis=0)
         geoloc_ubs_sp = pd.DataFrame(usb_sp2)
@@ -178,10 +170,7 @@ def encontra_ubs(request):
         cidade = address.get('city')
         estado= address.get('ISO3166-2-lvl4')[3:5]
         geoloc_ubs_sp = geoloc_ubs_sp.loc[(geoloc_ubs_sp["uf"] == estado) & (geoloc_ubs_sp["cidade"] == cidade)]
-    else:
-        l1 = l1
-        l2 = l2
-        #geoloc = geoloc_ubs
+
     lista_distancia=[]
     for _, dis in geoloc_ubs_sp.iterrows():
         distan = distance.distance((l1, l2), [float(dis['lat']), dis['long']]).km
