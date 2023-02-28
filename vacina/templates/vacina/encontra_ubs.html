@@ -7,10 +7,9 @@
 
 <!-- Page Content -->
 
-<p id="demo"></p>
-<h5 onload="getLocation()">Para localizar a UBS mais próxima <button onclick="getLocation()">Clique Aqui</button> (localização aproximada).</h5>
-<h5>{{status}}</h5>
 
+<h5 onload="getLocation()">Para localizar a UBS mais próxima <button onclick="getLocation()">Clique Aqui</button> (localização aproximada).</h5>
+<p id="demo" align="center"></p>
 <script>
 var x=document.getElementById("demo");
 function getLocation()
@@ -23,7 +22,7 @@ function getLocation()
   }
 function showPosition(position)
   {
-
+    x.innerHTML="Usuário localizado, por favor aguarde o processamento!"
   window.location.href = "/encontra_ubs/?lat=" +  position.coords.latitude +"&lon=" + position.coords.longitude;
   }
 function showError(error)
