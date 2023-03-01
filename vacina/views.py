@@ -27,7 +27,6 @@ def index(request):
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
     # casos_covid_sp = pd.read_csv(casos_covid, sep=';')
     leitos_ocupados_sp = pd.read_csv(leitos_publico, sep=';')
-
     leitos_ocupados_sp.rename(
         columns={'Leitos Ocupados / Enfermaria': 'enfermaria', 'Leitos Ocupados / UTI': 'uti'},
         inplace=True
