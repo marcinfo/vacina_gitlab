@@ -15,15 +15,15 @@
                 {% if request.user.is_authenticated %}
 
                 {%else%}
-                    <p>Para visualizar todos os dados, <a href="{% url "register" %}">registre aqui </a>ou faça o login!</p>
+                    <p>Selecione a <strong >Data de Nascimento.</strong>  Para visualizar todos os dados, <a href="{% url "register" %}">registre aqui </a>ou faça o login!</p>
                 {% endif %}
-                <legend>Selecione a <strong >Data de Nascimento.</strong> Caso não seja escolhida sera utilizada a data de hoje. </legend>
-                <input type="date"  name="data_de_nascimento" min="1923-01-01" max="2023-04-30"placeholder="01/01/1990"" required><br/><br/>
+
+                <input align = "center" type="date"  name="data_de_nascimento" min="1923-01-01" max="2023-04-30"placeholder="01/01/1990"" required><br/><br/>
                 <input type="submit" value="Calcular">
 
             </form>
             <div>
-            {{nova_data}}
+
             {% csrf_token %}
             {{dados_sql3|safe}}
                 </div>

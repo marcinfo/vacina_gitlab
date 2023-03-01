@@ -20,8 +20,8 @@ from geopy.geocoders import Nominatim
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230228_vacinometro.csv'
-    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230228_leitos_ocupados_por_unidade_hospitalar.zip'
+    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230301_vacinometro.csv'
+    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230301_leitos_ocupados_por_unidade_hospitalar.zip'
     # casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid, sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
@@ -72,10 +72,18 @@ def index(request):
 
 
 def vacinas_prazos(request):
+    param = TbParametros.objects.all().values()
+    param = pd.DataFrame(param)
+    parametro = param.groupby('parametro').sum().reset_index()
+
+    visualiar_apos_dias =   parametro.query('parametro=="visualiar_apos_dias"')
+    visualiar_apos_dias =  int(visualiar_apos_dias['valor'])
+    print(visualiar_apos_dias)
+
     nova_data = request.GET.get('data_de_nascimento')
 
     if nova_data == None:
-        nova_data = datetime.today()
+        return render(request, 'vacina/vacinas_prazos.html')
     data_selecionada = nova_data
     ##transfoma a dataa para o formato intenacional
     vac = TbCalendarioVacina.objects.all().values()
@@ -105,7 +113,7 @@ def vacinas_prazos(request):
     if request.user.is_authenticated:
         print('ok')
     else:
-        dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() + pd.DateOffset(days=7))]
+        dados_sql = dados_sql.loc[(dados_sql['dataprevista'] >= datetime.today() + pd.DateOffset(days=visualiar_apos_dias))]
 
     dados_sql.to_string(index=False)
     # transforma data para o formato brasileiro
@@ -195,6 +203,8 @@ def encontra_ubs(request):
     }
     return render(request, 'vacina/encontra_ubs.html', context)
 def minhas_vacinas(request):
+
+
     nascimento = request.user.profile.date_of_birth
     ##transfoma a dataa para o formato intenacional
     vac = TbCalendarioVacina.objects.all().values()
