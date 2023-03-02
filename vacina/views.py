@@ -20,8 +20,8 @@ from geopy.geocoders import Nominatim
 
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
-    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230301_vacinometro.csv'
-    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230301_leitos_ocupados_por_unidade_hospitalar.zip'
+    vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/03/20230301_vacinometro.csv'
+    leitos_publico = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/03/20230301_leitos_ocupados_por_unidade_hospitalar.zip'
     # casos_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/02/20230210_dados_covid_municipios_sp.csv'
     vacina_covid_sp = pd.read_csv(vacina_covid, sep=';')
     vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
