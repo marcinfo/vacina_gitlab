@@ -146,7 +146,12 @@ def encontra_ubs(request):
     status = 'Iniciando o Processamento, Aguarde!'
 
     if (lat_get == None) & (lon_get == None):
-        return render(request, 'vacina/encontra_ubs.html')
+        m = folium.Map( location=[-15.7801, -47.9292], zoom_start=3.5, control_scale=True, width=1090, height=450)
+        context = {
+        'vacin': 'Encontre a UBS mais proxima de você.',
+        'm': m._repr_html_()
+    }
+        return render(request, 'vacina/encontra_ubs.html',context)
         #geoloc = geoloc_ubs
     else:
         url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv'
