@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '@^k78$e&p+sm$!9^u+e&!mnd!ercjq4j-t-k!0$r7-r#i4mf#u'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -73,9 +73,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',# nome do driver
         'NAME': 'vacina_paulistana',
         'USER': 'root',
-        'PASSWORD': 'Psr2ZTQLvsj6ChtzPbfe',
-        'HOST': 'containers-us-west-197.railway.app', # não obrigatorio, se desejar pode deixar ja especificado
-        'PORT': '6648',
+        'PASSWORD': 'K3QeDAZpJGG6EIyOIBZr',
+        'HOST': 'containers-us-west-34.railway.app', # não obrigatorio, se desejar pode deixar ja especificado
+        'PORT': '5984',
     }
 }
 
