@@ -35,7 +35,7 @@ class TbCalendarioVacina(models.Model):
     class Meta:
         managed = False
         db_table = 'tb_calendario_vacina'
-        verbose_name = "Tabela de vacina"
+        verbose_name = "Tabela de monitor"
         verbose_name_plural = "Cadastro de Vacinas"
 
 

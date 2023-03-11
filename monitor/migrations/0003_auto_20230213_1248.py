@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vacina', '0002_authuser_tbcalendariovacina_tbloginusuario_tbmunicipiobrasil_tbmunicipios_tbubsdadosbrasil_tbubsdado'),
+        ('monitor', '0002_authuser_tbcalendariovacina_tbloginusuario_tbmunicipiobrasil_tbmunicipios_tbubsdadosbrasil_tbubsdado'),
     ]
 
     operations = [
@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='tbcalendariovacina',
-            options={'managed': False, 'verbose_name': 'Tabela de vacina', 'verbose_name_plural': 'Cadastro de Vacinas'},
+            options={'managed': False, 'verbose_name': 'Tabela de monitor', 'verbose_name_plural': 'Cadastro de Vacinas'},
         ),
         migrations.AlterModelOptions(
             name='tbmunicipios',

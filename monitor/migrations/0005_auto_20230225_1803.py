@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vacina', '0004_tbparametrizacao'),
+        ('monitor', '0004_tbparametrizacao'),
     ]
 
     operations = [

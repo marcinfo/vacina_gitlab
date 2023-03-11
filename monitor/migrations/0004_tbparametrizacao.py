@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vacina', '0003_auto_20230213_1248'),
+        ('monitor', '0003_auto_20230213_1248'),
     ]
 
     operations = [

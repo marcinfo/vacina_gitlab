@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vacina', '0001_initial'),
+        ('monitor', '0001_initial'),
     ]
 
     operations = [
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('status_vacina', models.CharField(blank=True, max_length=45, null=True)),
             ],
             options={
-                'verbose_name': 'Tabela de vacina',
+                'verbose_name': 'Tabela de monitor',
                 'verbose_name_plural': 'Tabela de vacinas',
                 'db_table': 'tb_calendario_vacina',
                 'managed': False,
