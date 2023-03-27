@@ -73,9 +73,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',# nome do driver
         'NAME': 'vacina_paulistana',
         'USER': 'root',
-        'PASSWORD': 'K3QeDAZpJGG6EIyOIBZr',
-        'HOST': 'containers-us-west-34.railway.app', # não obrigatorio, se desejar pode deixar ja especificado
-        'PORT': '5984',
+        'PASSWORD': '201206',
+        'HOST': '127.0.0.1', # não obrigatorio, se desejar pode deixar ja especificado
+        'PORT': '3306',
     }
 }
 
