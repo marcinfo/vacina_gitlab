@@ -7,7 +7,7 @@ apis = NinjaAPI( title = 'API Vacina Paulistana' )
 @apis.get('prazos/')
 def listar(request):
     prazos = TbCalendarioVacina.objects.filter().order_by('-descricao_vacina').reverse()
-    response = [{ 'vacina': i.descricao_vacina,\
+    response = [{ 'monitor': i.descricao_vacina,\
                  'observacao': i.observacao,'meses': i.meses} for i in prazos]
 
 

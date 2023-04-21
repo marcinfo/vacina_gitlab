@@ -59,7 +59,7 @@ def index(request):
 
     df_data_atualizacao = datetime.now(pytz.timezone('America/Sao_Paulo'))
 
-    return render(request, 'vacina/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil, \
+    return render(request, 'monitor/index.html', {'df_sao_paulo': df_sao_paulo, 'df_brasil': df_brasil, \
                                                  'df_data_atualizacao': df_data_atualizacao,
                                                  'leitos_ocupados_sp': leitos_ocupados_sp, \
                                                  'vacina_covid_sp1': vacina_covid_sp1,
@@ -76,7 +76,7 @@ def vacinas_prazos(request):
     nova_data = request.GET.get('data_de_nascimento')
 
     if nova_data == None:
-        return render(request, 'vacina/vacinas_prazos.html')
+        return render(request, 'monitor/vacinas_prazos.html')
     data_selecionada = nova_data
     ##transfoma a dataa para o formato intenacional
     vac = TbCalendarioVacina.objects.all().values()
@@ -132,7 +132,7 @@ def vacinas_prazos(request):
         'dados_sql3': dados_sql3.to_html(classes='table table-stripped', border=1, justify='center', index=False)
     }
 
-    return render(request, 'vacina/vacinas_prazos.html', context)
+    return render(request, 'monitor/vacinas_prazos.html', context)
 def encontra_ubs(request):
     lat_get = request.GET.get('lat')
     lon_get = request.GET.get('lon')
@@ -144,7 +144,7 @@ def encontra_ubs(request):
         'vacin': 'Encontre a UBS mais proxima de você.',
         'm': m._repr_html_()
     }
-        return render(request, 'vacina/encontra_ubs.html',context)
+        return render(request, 'monitor/encontra_ubs.html',context)
         #geoloc = geoloc_ubs
     else:
         url = 'https://sage.saude.gov.br/paineis/ubsFuncionamento/lista.php?output=csv'
@@ -199,7 +199,7 @@ def encontra_ubs(request):
         'vacin': 'Encontre a UBS mais proxima de você.',
         'm': m._repr_html_()
     }
-    return render(request, 'vacina/encontra_ubs.html', context)
+    return render(request, 'monitor/encontra_ubs.html', context)
 def minhas_vacinas(request):
 
 
@@ -244,11 +244,11 @@ def minhas_vacinas(request):
         'vacin': 'Minhas Vacinas',
         'dados_sql3': dados_sql3.to_html(classes='table table-stripped', border=1, justify='center', index=False)
     }
-    return render(request, 'vacina/minhas_vacinas.html', context)
+    return render(request, 'monitor/minhas_vacinas.html', context)
 def links(request):
-    return render(request, 'vacina/links.html')
+    return render(request, 'monitor/links.html')
 def api(request):
-    return render(request, 'vacina/api.html')
+    return render(request, 'monitor/api.html')
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -268,7 +268,7 @@ def user_login(request):
                 return HttpResponse('Invalid login')
     else:
         form = LoginForm()
-    return render(request, 'vacina/login.html', {'form': form})
+    return render(request, 'monitor/login.html', {'form': form})
 def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
@@ -283,16 +283,16 @@ def register(request):
             # Create the user profile
             Profile.objects.create(user=new_user)
             return render(request,
-                          'vacina/register_done.html',
+                          'monitor/register_done.html',
                           {'new_user': new_user})
     else:
         user_form = UserRegistrationForm()
     return render(request,
-                  'vacina/register.html',
+                  'monitor/register.html',
                   {'user_form': user_form})
 @login_required
 def dashboard(request):
-    return render(request, 'vacina/dashboard.html', {'section': 'dashboard'})
+    return render(request, 'monitor/dashboard.html', {'section': 'dashboard'})
 @login_required
 def edit(request):
     if request.method == 'POST':
@@ -312,6 +312,6 @@ def edit(request):
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
     return render(request,
-                  'vacina/edit.html',
+                  'monitor/edit.html',
                   {'user_form': user_form,
                    'profile_form': profile_form})

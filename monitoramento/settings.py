@@ -18,7 +18,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
 
-    'vacina.apps.VacinaConfig',
+    'monitor.apps.VacinaConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,7 +43,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'vacinapaulistana.urls'
+ROOT_URLCONF = 'monitoramento.urls'
 
 TEMPLATES = [
     {
@@ -62,7 +62,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'vacinapaulistana.wsgi.application'
+WSGI_APPLICATION = 'monitoramento.wsgi.application'
 
 
 # Database
