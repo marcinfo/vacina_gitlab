@@ -25,7 +25,6 @@ class AuthGroupPermissions(models.Model):
         db_table = 'auth_group_permissions'
         unique_together = (('group', 'permission'),)
 
-
 class AuthPermission(models.Model):
     name = models.CharField(max_length=255)
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
