@@ -10,15 +10,15 @@
 </head>
 <body>
   <div id="header">
-    <span class="logo">Vacina Paulistana </span>
+    <span class="logo">PAINEL COVID </span>
 
     <ul class="menu">
 
       <li {% if section == "inicio" %}class="selected"{% endif %}>
-        <a href="{% url "index" %}">Painel</a>
+        <a href="{% url "index" %}">Dados</a>
       </li>
       <li {% if section == "Vacinas disponivel no SUS" %}class="selected"{% endif %}>
-        <a href="{% url "vacinas_prazos" %}">Calendário</a>
+        <a href="{% url "vacinas_prazos" %}">Calculadora</a>
       </li>
 
       <li {% if section == "UBS" %}class="selected"{% endif %}>
