@@ -13,11 +13,7 @@ from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditFor
 from .models import Profile, TbCalendarioVacina, TbUbsDadosSp,TbParametros
 from datetime import datetime
 from geopy import distance
-
 from geopy.geocoders import Nominatim
-
-
-
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
     vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/04/20230421_vacinometro.csv'
@@ -27,7 +23,6 @@ def index(request):
     #vacina_covid_sp = vacina_covid_sp.loc[vacina_covid_sp['MUNICÍPIO'] != 'Grand Total']
     # casos_covid_sp = pd.read_csv(casos_covid, sep=';')
     leitos_ocupados_sp = pd.read_csv(leitos_publico, sep=';')
-
     leitos_ocupados_sp.rename(
         columns={'Leitos Ocupados / Enfermaria': 'enfermaria', 'Leitos Ocupados / UTI': 'uti'},
         inplace=True
@@ -43,7 +38,7 @@ def index(request):
     vacina_covid_sp1 = vacina_covid_sp[['UNICA', 'dose1', 'dose2', 'adicional']]
 
     vacina_covid_sp1 = vacina_covid_sp.sum()
-    print(vacina_covid_sp1)
+
     headers = {}
     response3 = requests.request('GET', url, data='data', headers=headers)
     dados_covid3 = json.loads(response3.content)
@@ -69,8 +64,6 @@ def index(request):
                                                  'leitos_ocupados_sp': leitos_ocupados_sp, \
                                                  'vacina_covid_sp1': vacina_covid_sp1,
                                                  'atualizacao': df_data_atualizacao})
-
-
 def vacinas_prazos(request):
     param = TbParametros.objects.all().values()
     param = pd.DataFrame(param)
