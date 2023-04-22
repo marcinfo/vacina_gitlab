@@ -35,9 +35,14 @@ def index(request):
                  'ADICIONAL': 'adicional', 'Grand Total': 'total'},
         inplace=True
     )
-    vacina_covid_sp1 = vacina_covid_sp[['UNICA', 'dose1', 'dose2', 'adicional']]
+
+    #vacina_covid_sp1 = vacina_covid_sp[['UNICA', 'dose1', 'dose2', 'adicional']]
 
     vacina_covid_sp1 = vacina_covid_sp.sum()
+    vacina_covid_sp1['total'] = vacina_covid_sp1['adicional'] + vacina_covid_sp1['reforco3'] + vacina_covid_sp1['reforco2'] + \
+                                vacina_covid_sp1['reforco'] + vacina_covid_sp1['UNICA'] + vacina_covid_sp1['dose2'] + \
+                                vacina_covid_sp1['dose1']
+
 
     headers = {}
     response3 = requests.request('GET', url, data='data', headers=headers)
