@@ -14,6 +14,7 @@ from .models import Profile, TbCalendarioVacina, TbUbsDadosSp,TbParametros
 from datetime import datetime
 from geopy import distance
 from geopy.geocoders import Nominatim
+
 def index(request):
     url = 'https://covid19-brazil-api.now.sh/api/report/v1'
     vacina_covid = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2023/04/20230426_vacinometro-1.csv'
